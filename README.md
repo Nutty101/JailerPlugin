@@ -1,4 +1,4 @@
-[![NPC Police Spigot Link](http://www.livecar.net/random/NPCPolice_logo.png)](https://www.spigotmc.org/threads/jailer-citizens-plugin.78420/) 
+[![NPC Police Spigot Link](http://www.livecar.net/random/NPCPolice_logo.png)](https://www.spigotmc.org/resources/npc-police-being-re-wrote.9553/) 
 
 ## About the plugin:
   NPC Police provides servers a system for implementing a judical system. It provides a structured jail system, NPC based police force, incarceration system, bounties, and general mayham deterrent.
@@ -31,4 +31,4 @@
 - [Sentinel - Spigot](https://www.spigotmc.org/resources/sentinel.22017/)  (NPC guard and attack mechanics plugin)     
 
 ## Spigot Resource Link:
-**Spigot Link:** https://www.spigotmc.org/threads/jailer-citizens-plugin.78420/
+**Spigot Link:** https://www.spigotmc.org/resources/npc-police-being-re-wrote.9553/
