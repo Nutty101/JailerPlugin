@@ -4,6 +4,10 @@
   NPC Police provides servers a system for implementing a judical system. It provides a structured jail system, NPC based police force, incarceration system, bounties, and general mayham deterrent.
 
 ## Features
+- One of best command and help systems out there
+  - Help only shows what a user has access to, nothing more nothing less.
+  - All help is json based and is hoverable for a description, command usage, and permissions. No searching help files or webpages
+  - Dont know it, hit tab. It will show you all possible values or what it expects. I have auto completed almost everything for you. If it's a number it will show you a # to alert you to that fact.
 - Base settings configurable at many levels.
   - Server (Config.yml), World, Regions, Jail, and per NPC
 - Customizable Bounties
