@@ -37,7 +37,7 @@
     - Set NPC defaults (Does not override settings on an NPC directly, just at the server or world level)
   - PlaceholderAPI
     - Offers several variables to display elsewhere.  
-      - Users: Bounty, TotalBounty. Current Status, Prior Status, Current JailName, Last assault/Murder/Arrested date or time in hh:mm:ss, Times Arrested/Escaped/Murders
+      - Users: Bounty, TotalBounty. Current Status, Prior Status, Current JailName, Last arrest/escape date MMM dd hh:mm, # of arrests/escape and murders
       - Global:  Most wanted user (Bounty, Status, Name), Closest Jail
   - BetonQuest
     - Provides extra Events, Objectives, and Conditions to build even more in depth quests/stories
