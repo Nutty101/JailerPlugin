@@ -40,12 +40,12 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>everything</id>
-            <url>http://repo.citizensnpcs.co/</url>
-        </repository>
-        <repository>
             <id>destinations-repo</id>
             <url>http://repo.livecar.net/</url>
+        </repository>
+        <repository>
+            <id>everything</id>
+            <url>http://repo.citizensnpcs.co/</url>
         </repository>
         <repository>
             <id>vault-repo</id>
@@ -58,6 +58,10 @@
         <repository>
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
+        </repository>
+        <repository>
+            <id>betonquest-repo</id>
+            <url>https://betonquest.pl/mvn</url>
         </repository>
     </repositories>
 
