@@ -15,7 +15,7 @@
         <!-- NPC_Police Api -->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-API</artifactId>
+            <artifactId>API</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>

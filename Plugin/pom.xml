@@ -9,13 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>NPCPolice-Plugin</artifactId>
+    <artifactId>Plugin</artifactId>
 
     <dependencies>
         <!--Bridge References-->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-API</artifactId>
+            <artifactId>API</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
@@ -30,35 +30,35 @@
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_9_R2</artifactId>
+            <artifactId>V1_9_R2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_10_R1</artifactId>
+            <artifactId>V1_10_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_11_R1</artifactId>
+            <artifactId>V1_11_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_12_R1</artifactId>
+            <artifactId>V1_12_R1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_13_R2</artifactId>
+            <artifactId>V1_13_R2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
@@ -67,7 +67,7 @@
         <!-- BetonQuest Integration -->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-BetonQuest_V1_9</artifactId>
+            <artifactId>BetonQuest_V1_9</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
@@ -92,14 +92,14 @@
         <!-- WorldGuard Integration -->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-WG6_2_2</artifactId>
+            <artifactId>WG6_2_2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-WG7_0_1</artifactId>
+            <artifactId>WG7_0_1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>

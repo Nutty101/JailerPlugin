@@ -9,13 +9,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>NPCPolice-V1_9_R2</artifactId>
+    <artifactId>V1_9_R2</artifactId>
 
     <dependencies>
         <!-- NPC_Police Api -->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-API</artifactId>
+            <artifactId>API</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
