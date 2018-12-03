@@ -15,12 +15,11 @@
         <module>v1_13_R2</module>
         <module>v1_12_R1</module>
         <module>V1_10_R1</module>
-        <module>V1_12_R1</module>
-        <module>V1_13_R2</module>
+        <module>V1_9_R2</module>
+        <module>V1_8_R3</module>
         <module>Worldguard_V6_2_2</module>
-        <module>Worldguard_V7_0_0</module>
+        <module>Worldguard-V7_0_1</module>
         <module>BetonQuest_V1_9</module>
-        <module>NPCPolice-WG7_0_1</module>
     </modules>
 
     <name>NPC_Police</name>
