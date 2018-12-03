@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>WG7_0_1</artifactId>
+    <artifactId>Worldguard-V7_0_1</artifactId>
 
     <dependencies>
         <!-- NPC_Police API -->

@@ -92,14 +92,14 @@
         <!-- WorldGuard Integration -->
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>WG6_2_2</artifactId>
+            <artifactId>Worldguard_V6_2_2</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>WG7_0_1</artifactId>
+            <artifactId>Worldguard-V7_0_1</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>true</optional>
