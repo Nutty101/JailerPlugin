@@ -68,7 +68,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${artifactId}-${version}${build.number}</finalName>
+        <finalName>${artifactId}-2_2_${build.number}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
