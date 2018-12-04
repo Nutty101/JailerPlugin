@@ -1,0 +1,16 @@
+name: NPC_Police
+main: net.livecar.nuttyworks.npc_police.NPCPolice_Plugin
+description: Enables a police force on your server
+version: 2.2.1
+author: Sir_Nutty@Spigot
+website: https://www.spigotmc.org/resources/npc-police.9553/
+api-version: 1.13
+depend: [Citizens]
+loadbefore: [WorldGuard]
+loadafter: [Multiverse]
+commands:
+  npcpolice:
+    description: Bring out the enforcer in your NPC.
+    aliases: [np]
+    usage:  |
+      /npcpolice help
