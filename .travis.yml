@@ -10,5 +10,4 @@ deploy:
   api_key: $GITHUB_OAUTH_TOKEN
   file: "NPC_Police-2.2-$TRAVIS_TAG.zip"
   skip_cleanup: true
-  on:
-    tags: true
+
