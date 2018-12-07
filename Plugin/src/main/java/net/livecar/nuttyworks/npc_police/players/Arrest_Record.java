@@ -856,6 +856,23 @@ public class Arrest_Record {
                     }
                 }
             }
+
+            World_Setting globalConfig = getStorageReference.getJailManager.getWorldSettings();
+            if (globalConfig != null && globalConfig.bannedItems != null) {
+                for (int bannedCount = 0; bannedCount < globalConfig.bannedItems.length; bannedCount++) {
+                    if (globalConfig.bannedItems[bannedCount] == null || globalConfig.bannedItems[bannedCount].getType() == Material.AIR)
+                        continue;
+
+                    for (int plrInvCount = 0; plrInvCount < plrInventory.length; plrInvCount++) {
+                        if (plrInventory[plrInvCount] != null && plrInventory[plrInvCount].getType() != Material.AIR) {
+                            if (getStorageReference.getUtilities.isItemSimular(plrInventory[plrInvCount], globalConfig.bannedItems[bannedCount])) {
+                                plrInventory[plrInvCount] = null;
+                            }
+                        }
+                    }
+                }
+            }
+
             getStorageReference.getUtilities.addToInventory(plrInventory, lockedInventory);
             getPlayer().getInventory().clear();
 
