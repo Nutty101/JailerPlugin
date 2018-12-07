@@ -11,36 +11,45 @@ import org.bukkit.event.Listener;
 import java.util.List;
 
 public abstract class VersionBridge implements Listener {
-    public static final BooleanFlag CELL_FLAG = new BooleanFlag("np-jailcell");
-    public static final BooleanFlag ARREST_FLAG = new BooleanFlag("np-noarrest");
-    public static final BooleanFlag PVP_FLAG = new BooleanFlag("np-monitors-pvp");
-    public static final BooleanFlag MURDER_FLAG = new BooleanFlag("np-mon-murder");
-    public static final BooleanFlag ASSAULT_FLAG = new BooleanFlag("np-mon-assault");
-    public static final BooleanFlag REGIONGUARD_FLAG = new BooleanFlag("np-regionguard");
 
+    // Jail Configuration Flags
+    public static final BooleanFlag CELL_FLAG = new BooleanFlag("np-jailcell");
     public static final StringFlag EXTENDEDJAIL_FLAG = new StringFlag("np-extendedjail");
 
-    public static final StringFlag WANTED_DENYMIN_FLAG = new StringFlag("np-deny-wntmin");
-    public static final StringFlag WANTED_DENYMAX_FLAG = new StringFlag("np-deny-wntmax");
-    public static final StringFlag WANTED_NPC_SETTING_FLAG = new StringFlag("np-npc-wanted");
-    public static final StringFlag WANTED_KICK_TYPE_FLAG = new StringFlag("np-kick-type");
-    public static final StringFlag WANTED_KICK_LOCATION_FLAG = new StringFlag("np-kick-location");
-
-    public static final StringFlag WANTED_CHANGE_FLAG = new StringFlag("np-wanted-change");
-    public static final StringFlag WANTED_FORCED_FLAG = new StringFlag("np-wanted-force");
-
-    public static final CurrentStatusFlag AUTOFLAG_FLAG = new CurrentStatusFlag("np-af");
+    //Bounty Modification flags
     public static final DoubleFlag AUTOFLAG_BOUNTY_FLAG = new DoubleFlag("np-af-bounty");
     public static final DoubleFlag AUTOFLAG_BOUNTY_COOLDOWN = new DoubleFlag("np-af-cooldown");
-    public static final BooleanFlag AUTOFLAG_GUARDSIGHT_FLAG = new BooleanFlag("np-af-requiresight");
-    public static final StringFlag AUTOFLAG_CAUGHT_FLAG = new StringFlag("np-af-caught");
-
     public static final DoubleFlag BOUNTY_DAMAGE_FLAG = new DoubleFlag("np-bnty-damage");
     public static final DoubleFlag BOUNTY_PVP_FLAG = new DoubleFlag("np-bnty-pvp");
     public static final DoubleFlag BOUNTY_MURDER_FLAG = new DoubleFlag("np-bnty-murder");
     public static final DoubleFlag BOUNTY_ESCAPED_FLAG = new DoubleFlag("np-bnty-escaped");
     public static final DoubleFlag BOUNTY_WANTED_FLAG = new DoubleFlag("np-bnty-wanted");
     public static final DoubleFlag BOUNTY_MAXIMUM_FLAG = new DoubleFlag("np-bnty-max");
+
+    //Wanted level modification
+    public static final StringFlag WANTED_CHANGE_FLAG = new StringFlag("np-wanted-change");
+    public static final StringFlag WANTED_FORCED_FLAG = new StringFlag("np-wanted-force");
+    public static final StringFlag WANTED_KICK_TYPE_FLAG = new StringFlag("np-kick-type");
+    public static final StringFlag WANTED_KICK_LOCATION_FLAG = new StringFlag("np-kick-location");
+    public static final StringFlag WANTED_DENYMIN_FLAG = new StringFlag("np-deny-wntmin");
+    public static final StringFlag WANTED_DENYMAX_FLAG = new StringFlag("np-deny-wntmax");
+    public static final StringFlag WANTED_NPC_SETTING_FLAG = new StringFlag("np-npc-wanted");
+
+    //Activity Flags
+
+    public static final BooleanFlag ARREST_FLAG = new BooleanFlag("np-noarrest");
+    public static final BooleanFlag PVP_FLAG = new BooleanFlag("np-monitors-pvp");
+    public static final BooleanFlag MURDER_FLAG = new BooleanFlag("np-mon-murder");
+    public static final BooleanFlag ASSAULT_FLAG = new BooleanFlag("np-mon-assault");
+    public static final BooleanFlag REGIONGUARD_FLAG = new BooleanFlag("np-regionguard");
+
+    //Wanted Status Flags
+
+    public static final CurrentStatusFlag AUTOFLAG_FLAG = new CurrentStatusFlag("np-af");
+    public static final BooleanFlag AUTOFLAG_GUARDSIGHT_FLAG = new BooleanFlag("np-af-requiresight");
+    public static final StringFlag AUTOFLAG_CAUGHT_FLAG = new StringFlag("np-af-caught");
+
+
 
     public static String replaceColorMacros(String str) {
         str = str.replace("&r", ChatColor.RED.toString());
