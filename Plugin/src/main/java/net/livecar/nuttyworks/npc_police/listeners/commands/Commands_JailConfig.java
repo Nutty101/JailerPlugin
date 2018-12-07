@@ -187,7 +187,7 @@ public class Commands_JailConfig {
             }
 
             policeRef.getJailManager.removeJail(player.getWorld(), selectedJail);
-            policeRef.getMessageManager.sendMessage(player, "jail_settings.config_jail_removed", selectedJail.jailName);
+            policeRef.getMessageManager.sendMessage(player, "general_messages.config_jail_removed", selectedJail.jailName);
             return true;
         }
 
@@ -199,7 +199,7 @@ public class Commands_JailConfig {
             return true;
         }
         policeRef.getJailManager.removeJail(jailSetting.jailWorld, jailSetting);
-        policeRef.getMessageManager.sendMessage(sender, "jail_settings.config_jail_removed", jailName);
+        policeRef.getMessageManager.sendMessage(sender, "general_messages.config_jail_removed", jailName);
         return true;
     }
 
@@ -274,7 +274,7 @@ public class Commands_JailConfig {
             permission = "npcpolice.config.jails.removecell",
             allowConsole = false,
             minArguments = 0,
-            maxArguments = 0
+            maxArguments = 5
     )
     public boolean jailConfig_RemoveCell(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
         Player player = (Player) sender;
