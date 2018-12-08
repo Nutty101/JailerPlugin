@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>NPCPolice-V1_8_R3</artifactId>
+    <artifactId>V1_8_R3</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
