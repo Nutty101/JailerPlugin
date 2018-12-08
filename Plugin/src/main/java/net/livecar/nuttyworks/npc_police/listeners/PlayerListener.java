@@ -75,21 +75,23 @@ public class PlayerListener implements Listener {
             if (plrRecord.getCurrentStatus() == CURRENT_STATUS.FREE && plrRecord.getLockedInventory() != null) {
                 for (Jail_Setting jailSetting : getStorageReference.getJailManager.getWorldJails(event.getPlayer().getWorld().getName())) {
                     if (jailSetting.lockedInventoryLocation != null) {
-                        if (event.getClickedBlock().getLocation().distanceSquared(jailSetting.lockedInventoryLocation) < 1) {
-
-                            JailerGUI_LockedInventory guiMenu = new JailerGUI_LockedInventory(jailSetting.displayName, 54, getStorageReference, player);
-                            int chestID = 0;
-                            for (int slotID = 0; slotID < plrRecord.getLockedInventory().length; slotID++) {
-                                if (slotID > 53)
-                                    break;
-                                if (plrRecord.getLockedInventory()[slotID] != null && plrRecord.getLockedInventory()[slotID].getType() != Material.AIR) {
-                                    guiMenu.setSlotItem(chestID, plrRecord.getLockedInventory()[slotID]);
-                                    chestID++;
+                        if (event.getClickedBlock().getLocation().distanceSquared(jailSetting.lockedInventoryLocation) < 3.0D) {
+                            if (this.getStorageReference.getVersionBridge.isSameChest(jailSetting.lockedInventoryLocation, event.getClickedBlock().getLocation())) {
+                                JailerGUI_LockedInventory guiMenu = new JailerGUI_LockedInventory(jailSetting.displayName, 54, this.getStorageReference, player);
+                                int chestID = 0;
+                                for (int slotID = 0; slotID < plrRecord.getLockedInventory().length; slotID++) {
+                                    if (slotID > 53) {
+                                        break;
+                                    }
+                                    if ((plrRecord.getLockedInventory()[slotID] != null) && (plrRecord.getLockedInventory()[slotID].getType() != Material.AIR)) {
+                                        guiMenu.setSlotItem(chestID, plrRecord.getLockedInventory()[slotID]);
+                                        chestID++;
+                                    }
                                 }
+                                guiMenu.open();
+                                event.setCancelled(true);
+                                return;
                             }
-                            guiMenu.open();
-                            event.setCancelled(true);
-                            return;
                         }
                     }
                 }
