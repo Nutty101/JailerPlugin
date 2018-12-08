@@ -1,6 +1,7 @@
 package net.livecar.nuttyworks.npc_police.bridges;
 
 import org.bukkit.*;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -204,5 +205,59 @@ public class MCUtils_1_13_R2 extends MCUtilsBridge {
         }
     }
 
+    @Override
+    public boolean isSameChest(Location chestLocation, Location clickedLocation)
+    {
+
+        if (chestLocation.getBlock().getLocation().equals(clickedLocation.getBlock().getLocation()) && (chestLocation.getBlock().getBlockData() instanceof Chest))
+            return true;
+
+        if (!(chestLocation.getBlock().getBlockData() instanceof Chest) ||  !(clickedLocation.getBlock().getBlockData() instanceof Chest))
+        {
+         return false;
+        }
+
+        Chest locChest = (Chest)chestLocation.getBlock().getBlockData();
+
+        if (locChest.getType() == Chest.Type.SINGLE)
+            return false;
+
+        switch (locChest.getFacing())
+        {
+            case NORTH:
+                if (locChest.getType() == Chest.Type.LEFT)
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(1,0,0)))
+                        return true;
+                if (locChest.getType() == Chest.Type.RIGHT )
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(-1,0,0)))
+                        return true;
+                break;
+            case EAST:
+                if (locChest.getType() == Chest.Type.LEFT)
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(0,0,1)))
+                        return true;
+                if (locChest.getType() == Chest.Type.RIGHT )
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(0,0,-1)))
+                        return true;
+                break;
+            case SOUTH:
+                if (locChest.getType() == Chest.Type.LEFT)
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(-1,0,0)))
+                        return true;
+                if (locChest.getType() == Chest.Type.RIGHT )
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(1,0,0)))
+                        return true;
+                break;
+            case WEST:
+                if (locChest.getType() == Chest.Type.LEFT)
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(0,0,-1)))
+                        return true;
+                if (locChest.getType() == Chest.Type.RIGHT )
+                    if (clickedLocation.getBlock().getLocation().equals(chestLocation.getBlock().getLocation().clone().add(0,0,1)))
+                        return true;
+                break;
+        }
+        return false;
+    }
 
 }

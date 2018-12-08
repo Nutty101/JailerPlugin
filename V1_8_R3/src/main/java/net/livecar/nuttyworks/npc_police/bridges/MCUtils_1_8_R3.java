@@ -6,8 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.*;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -132,4 +134,32 @@ public class MCUtils_1_8_R3 extends MCUtilsBridge {
         return Double.valueOf(100.0D);
     }
 
+    @Override
+    public boolean isSameChest(Location chestLocation, Location clickedLocation) {
+
+        if (chestLocation.getBlock().getLocation().equals(clickedLocation.getBlock().getLocation()))
+            return true;
+
+        if (chestLocation.getBlock().getType() != Material.CHEST && chestLocation.getBlock().getType() != Material.TRAPPED_CHEST )
+            return false;
+
+        if (clickedLocation.getBlock().getType() != Material.CHEST && clickedLocation.getBlock().getType() != Material.TRAPPED_CHEST )
+            return false;
+
+        Chest chestInstance = (Chest)chestLocation.getBlock().getState();
+        InventoryHolder chestInv = chestInstance.getInventory().getHolder();
+
+        if (chestInv instanceof DoubleChest) {
+            DoubleChest doubleChest = ((DoubleChest) chestInv);
+            Chest leftChest = (Chest) doubleChest.getLeftSide();
+            Chest rightChest = (Chest) doubleChest.getRightSide();
+
+            if (leftChest.getLocation().getBlock().getLocation().equals(clickedLocation.getBlock().getLocation()))
+                return true;
+
+            if (rightChest.getLocation().getBlock().getLocation().equals(clickedLocation.getBlock().getLocation()))
+                return true;
+        }
+        return false;
+    }
 }

@@ -37,4 +37,6 @@ public abstract class MCUtilsBridge {
     abstract public void PlayOutParticle(Location partLocation, Player player);
 
     abstract public void PlayOutParticle(String particleType, Location partLocation, Player player);
+
+    abstract public boolean isSameChest(Location chestLocation, Location clickedLocation);
 }
