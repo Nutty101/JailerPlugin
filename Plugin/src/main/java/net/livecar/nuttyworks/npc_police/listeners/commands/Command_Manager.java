@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 public class Command_Manager {
     HashMap<String, Command_Record> registeredCommands;
@@ -178,14 +179,28 @@ public class Command_Manager {
                 return true;
             }
 
-            if (getStorageReference.hasPermissions(sender, cmdRecord.commandPermission) && (inargs.length - 1 >= cmdRecord.minArguments && inargs.length - 1 <= cmdRecord.maxArguments))
-                return registeredCommands.get(inargs[0].toLowerCase()).invokeCommand(getStorageReference, sender, npc, inargs, selectedPlayer, selectedWorld, worldConfig, selectedJail);
-            else {
-                if (isPlayer(sender))
-                    getStorageReference.getMessageManager.sendMessage(sender, "general_messages." + cmdRecord.badArgumentsMessage);
-                else
-                    getStorageReference.getMessageManager.sendMessage(sender, "console_messages." + cmdRecord.badArgumentsMessage);
+            if (!getStorageReference.hasPermissions(sender, cmdRecord.commandPermission))
+            {
+                getStorageReference.getMessageManager.sendMessage(sender, "messages.no_permissions");
+                return true;
             }
+
+            if (getStorageReference.hasPermissions(sender, cmdRecord.commandPermission) && (inargs.length - 1 >= cmdRecord.minArguments && inargs.length - 1 <= cmdRecord.maxArguments))
+                if (registeredCommands.get(inargs[0].toLowerCase()).invokeCommand(getStorageReference, sender, npc, inargs, selectedPlayer, selectedWorld, worldConfig, selectedJail))
+                    return true;
+
+            if (isPlayer(sender)) {
+                String messageValue = getStorageReference.getMessageManager.buildMessage(sender,"command_jsonhelp." + cmdRecord.helpMessage,null,null,null,null,null,null,null,0)[0];
+                if (messageValue.trim().equals("")) {
+                    getStorageReference.getMessageManager.logToConsole("Language Message Missing (" + cmdRecord.helpMessage + ")", Level.WARNING);
+                } else {
+                    messageValue = messageValue.replaceAll("<permission>", cmdRecord.commandPermission).replaceAll("<commandname>", cmdRecord.commandName);
+                }
+                getStorageReference.getMessageManager.sendMessage(sender, "general_messages.commands_invalidarguments", messageValue);
+                return true;
+            } else
+                getStorageReference.getMessageManager.sendMessage(sender, "console_messages." + cmdRecord.helpMessage);
+
         }
         return false;
     }

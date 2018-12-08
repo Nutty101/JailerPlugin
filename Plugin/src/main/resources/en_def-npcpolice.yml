@@ -1,4 +1,5 @@
 ﻿general_messages:
+  commands_invalidarguments: "[{\"text\":\"Invalid arguments for the command \",\"color\":\"RED\"},<message>]"
   no_permissions: "[{\"text\":\"[\",\"color\":\"yellow\"},{\"text\":\"NPCPolice\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"yellow\"},{\"text\":\"No permissions\"}]"
   invalid_command:  "[{\"text\":\"[\",\"color\":\"yellow\"},{\"text\":\"NPCPolice\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"yellow\"},{\"text\":\"Invalid command\"}]"
   invalid_worldguard:  "[{\"text\":\"[\",\"color\":\"yellow\"},{\"text\":\"NPCPolice\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"yellow\"},{\"text\":\"Plugin Disabled, you need build 1672 (V6.1.3) or better of WorldGuard.\"}]"
