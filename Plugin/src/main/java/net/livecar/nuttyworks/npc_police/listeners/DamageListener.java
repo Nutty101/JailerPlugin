@@ -12,6 +12,7 @@ import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
 import net.livecar.nuttyworks.npc_police.worldguard.RegionSettings;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -197,8 +198,11 @@ public class DamageListener implements Listener {
             Player player = (Player) damager;
             Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
 
+            if (plrRecord == null)
+                return;
+
             // Check min damage in config
-            if ((new Date().getTime() - plrRecord.getLastWarning().getTime() > 2000) && (event.getDamage() < getStorageReference.getJailManager.getMaxWarningDamage(world)) && ((plrRecord.lastAttack == null && !plrRecord.lastAttack.trim().equals("")) || !plrRecord.lastAttack.equalsIgnoreCase(npc.getName())) && (plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED && plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED)) {
+            if ((new Date().getTime() - plrRecord.getLastWarning().getTime() > 2000) && (event.getDamage() < getStorageReference.getJailManager.getMaxWarningDamage(world)) && ((plrRecord.lastAttack != null && !plrRecord.lastAttack.trim().equals("")) || !plrRecord.lastAttack.equalsIgnoreCase(npc.getName())) && (plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED && plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED)) {
                 // Give a warning to the player
                 plrRecord.setLastWarning(new Date());
                 plrRecord.lastAttack = npc.getName();
@@ -352,6 +356,8 @@ public class DamageListener implements Listener {
         if (getStorageReference.getWorldGuardPlugin != null)
             regionFlags = getStorageReference.getWorldGuardPlugin.getRelatedRegionFlags(damaged.getLocation());
         World currentWorld = damager.getLocation().getWorld();
+
+        getStorageReference.getJobsRebornPlugin.playerHasPoliceJob((OfflinePlayer)event.getDamager());
 
         // PVP
         if (regionFlags.monitorPVP == STATE_SETTING.TRUE || regionFlags.monitorPVP == STATE_SETTING.NOTSET) {
