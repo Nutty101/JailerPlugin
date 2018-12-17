@@ -80,7 +80,7 @@ public class Database_MySql extends Thread implements Database_Interface {
                         if (!results.isBeforeFirst()) {
                             try (Statement sqlStmtInsert = dbConnection.createStatement()) {
                                 sqlStmtInsert.setQueryTimeout(30);
-                                sqlStatement.executeUpdate("Create table " + dbTablePrefix + "_WantedReasons (player_id varchar(40), wanted_reason varchar(20), plugin_reason varchar(50), attacked_name varchar(30), witness_name varchar(40), server_name varchar(40), bounty decimal(15,4), offense_count int, offense_date BIGINT)");
+                                sqlStatement.executeUpdate("Create table " + dbTablePrefix + "_WantedReasons (player_id varchar(40), wanted_reason varchar(20), plugin_reason varchar(50), attacked_name varchar(30), witness_name varchar(40), server_name varchar(40), bounty decimal(15,4), offense_count int, offense_date datetime)");
                                 close(sqlStmtInsert);
                             }
                         }
