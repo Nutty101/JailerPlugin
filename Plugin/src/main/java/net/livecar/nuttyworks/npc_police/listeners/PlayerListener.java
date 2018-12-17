@@ -9,6 +9,7 @@ import net.livecar.nuttyworks.npc_police.gui_interface.JailerGUI_LockedInventory
 import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.listeners.commands.Pending_Command;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
     private NPC_Police getStorageReference = null;
@@ -34,8 +36,17 @@ public class PlayerListener implements Listener {
         }
 
         getStorageReference.getDatabaseManager.queueLoadPlayerRequest(event.getPlayer().getUniqueId());
-        if (getStorageReference.getSentinelPlugin != null && event.getPlayer().isOp())
-            getStorageReference.getSentinelPlugin.alertOpToIssues(event.getPlayer());
+        if (getStorageReference.getSentinelPlugin != null && event.getPlayer().isOp()) {
+
+            if (getStorageReference.getSentinelPlugin.alertOpToIssues(event.getPlayer()))
+            {
+                final Player plr = event.getPlayer();
+                Bukkit.getServer().getScheduler().runTaskLater(
+                        getStorageReference.pluginInstance, () -> getStorageReference.getMessageManager.sendMessage(plr, "general_messages.sentinel_issue"), 10
+                );
+
+            }
+        }
     }
 
     @EventHandler

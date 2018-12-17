@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>net.livecar.nuttyworks.npc_police</groupId>
-            <artifactId>NPCPolice-V1_8_R3</artifactId>
+            <artifactId>V1_8_R3</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
             <optional>false</optional>
@@ -80,6 +80,23 @@
             <scope>compile</scope>
             <optional>false</optional>
         </dependency>
+
+        <!-- Sentinel Integration -->
+        <dependency>
+            <groupId>net.livecar.nuttyworks.npc_police</groupId>
+            <artifactId>Sentinel_Plugin_1_6</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>false</optional>
+        </dependency>
+        <dependency>
+            <groupId>net.livecar.nuttyworks.npc_police</groupId>
+            <artifactId>Sentinel_Plugin_1_7</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>false</optional>
+        </dependency>
+
 
         <!-- BetonQuest Integration -->
         <dependency>

@@ -11,7 +11,8 @@ import net.livecar.nuttyworks.npc_police.thirdpartyplugins.betonquest.betonquest
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.jobs_reborn.JobsReborn_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.leaderheads.LeaderHeads_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.placeholderapi.PlaceHolder_Plugin;
-import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plugin;
+import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plugin_1_6;
+import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plugin_1_7;
 import net.livecar.nuttyworks.npc_police.utilities.Utilities;
 import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_6_2_2;
 import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_7_0_1;
@@ -131,19 +132,21 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
             policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.jobsreborn_found");
         }
 
-        if (getServer().getPluginManager().getPlugin("Sentries") == null && getServer().getPluginManager().getPlugin("Sentinel") == null) {
+        if (getServer().getPluginManager().getPlugin("Sentinel") == null) {
             policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.npcbattle_notfound");
         } else if (getServer().getPluginManager().getPlugin("Sentinel") != null) {
 
-            policeStorage_Class.getSentinelPlugin = new Sentinel_Plugin(policeStorage_Class);
-
-            if (!policeStorage_Class.getSentinelPlugin.meetsMinVersion()) {
+            if (Sentinel_Plugin_1_7.isValidVersion())
+            {
+                policeStorage_Class.getSentinelPlugin = new Sentinel_Plugin_1_7();
+                policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.sentinel_found", policeStorage_Class.getSentinelPlugin.getVersionString());
+            } else if (Sentinel_Plugin_1_6.isValidVersion()) {
+                policeStorage_Class.getSentinelPlugin = new Sentinel_Plugin_1_6();
+                policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.sentinel_found", policeStorage_Class.getSentinelPlugin.getVersionString());
+            } else {
                 policeStorage_Class.getSentinelPlugin = null;
                 policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.sentinel_version");
-            } else {
-                policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.sentinel_found", policeStorage_Class.getSentinelPlugin.getVersionString());
             }
-
         }
 
         if (getServer().getPluginManager().getPlugin("WorldGuard") == null) {

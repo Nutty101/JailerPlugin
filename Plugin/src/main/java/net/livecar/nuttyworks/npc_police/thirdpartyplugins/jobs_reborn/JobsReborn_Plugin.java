@@ -1,10 +1,15 @@
 package net.livecar.nuttyworks.npc_police.thirdpartyplugins.jobs_reborn;
 
 import com.gamingmesh.jobs.Jobs;
-import com.gamingmesh.jobs.container.Job;
+import com.gamingmesh.jobs.container.*;
+import com.gamingmesh.jobs.resources.jfep.Parser;
+import com.gamingmesh.jobs.stuff.ChatColor;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.List;
 
 public class JobsReborn_Plugin {
 
@@ -46,6 +51,7 @@ public class JobsReborn_Plugin {
     }
 
     public boolean JobExists(String jobName) {
+
         for (Job oJob : Jobs.getJobs()) {
             if (oJob.getName().equalsIgnoreCase(jobName))
                 return true;
@@ -53,4 +59,25 @@ public class JobsReborn_Plugin {
         ;
         return false;
     }
+
+    public boolean playerHasPoliceJob(OfflinePlayer player) {
+
+        JobsPlayer playerJobs = Jobs.getPlayerManager().getJobsPlayer(player.getUniqueId());
+
+        for (Job oJob : Jobs.getJobs()) {
+            for (JobInfo jobInfo : oJob.getJobInfo(ActionType.CUSTOMKILL))
+            {
+                if (jobInfo.isInLevelRange(1))
+                {
+
+                }
+            }
+        }
+
+
+
+
+        return false;
+    }
+
 }

@@ -21,6 +21,8 @@
         <module>Worldguard_V6_2_2</module>
         <module>Worldguard-V7_0_1</module>
         <module>BetonQuest_V1_9</module>
+        <module>Sentinel_Plugin_1_6</module>
+        <module>Sentinel_Plugin_1_7</module>
     </modules>
 
     <name>NPC_Police</name>
