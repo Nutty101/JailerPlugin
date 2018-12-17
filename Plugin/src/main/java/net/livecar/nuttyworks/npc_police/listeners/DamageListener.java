@@ -357,8 +357,6 @@ public class DamageListener implements Listener {
             regionFlags = getStorageReference.getWorldGuardPlugin.getRelatedRegionFlags(damaged.getLocation());
         World currentWorld = damager.getLocation().getWorld();
 
-        getStorageReference.getJobsRebornPlugin.playerHasPoliceJob((OfflinePlayer)event.getDamager());
-
         // PVP
         if (regionFlags.monitorPVP == STATE_SETTING.TRUE || regionFlags.monitorPVP == STATE_SETTING.NOTSET) {
             NPC witnessNPC = null;
