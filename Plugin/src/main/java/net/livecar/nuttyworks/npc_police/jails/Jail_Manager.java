@@ -986,7 +986,7 @@ public class Jail_Manager {
         String worldList = "";
 
         for (World_Setting worldConfig : world_Configurations.values()) {
-            if (getStorageReference.pluginInstance.getServer().getWorld(worldConfig.getWorldName()) == null)
+            if (getStorageReference.pluginInstance.getServer().getWorld(worldConfig.getWorldName()) == null && !worldConfig.getWorldName().equalsIgnoreCase("_GlobalSettings"))
                 continue;
 
             worldList += "[" + worldConfig.getWorldName() + "] ";
