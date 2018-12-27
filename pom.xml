@@ -64,7 +64,7 @@
         </repository>
         <repository>
             <id>betonquest-repo</id>
-            <url>https://betonquest.pl/mvn</url>
+            <url>http://betonquest.pl/mvn</url>
         </repository>
     </repositories>
 
