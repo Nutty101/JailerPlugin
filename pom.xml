@@ -64,7 +64,7 @@
         </repository>
         <repository>
             <id>betonquest-repo</id>
-            <url>http://betonquest.pl/mvn</url>
+            <url>https://repo.worldguard.com.au/maven-public/</url>
         </repository>
     </repositories>
 
