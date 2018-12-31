@@ -140,7 +140,7 @@ public class JailerGUI_Interface {
         if (getStorageReference.hasPermissions(event.getPlayer(), "npcpolice.fines.payothers")) {
             Arrest_Record plrRecord = jmenuData.GetPlayerData();
 
-            if (plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && plrRecord.getPriorStatus() == CURRENT_STATUS.ESCAPED) {
+            if (plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && plrRecord.getPriorStatus() != CURRENT_STATUS.ESCAPED) {
 
                 //@Since 2.2.1 - First attempt to raise the event and see if anyone covers the payment prior to the economy plugin.
                 PlayerPayBountyEvent playerPayBountyEvent = new Core_PlayerPayBountyEvent(getStorageReference, plrRecord.getOfflinePlayer(), event.getPlayer(), plrRecord.getBounty(), plrRecord);
@@ -188,7 +188,7 @@ public class JailerGUI_Interface {
         for (Arrest_Record playerRecord : getStorageReference.getPlayerManager.getPlayerRecords()) {
             if (playerRecord.isOnline()) {
                 if (playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && playerRecord.getPriorStatus() != CURRENT_STATUS.ESCAPED && getStorageReference.hasPermissions(event.getPlayer(), "npcpolice.fines.payothers")) {
-                    TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(Action.PayPlayer, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), "gui_menu.list_serving_nobail", jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
+                    TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(Action.PayPlayer, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), "gui_menu.list_serving_bail", jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
                     nCnt++;
                 } else if (playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED) {
                     TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(Action.Arrested, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), "gui_menu.list_serving_nobail", jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
