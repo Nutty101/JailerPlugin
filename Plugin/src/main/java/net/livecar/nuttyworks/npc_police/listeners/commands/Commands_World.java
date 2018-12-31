@@ -3,6 +3,7 @@ package net.livecar.nuttyworks.npc_police.listeners.commands;
 import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.annotations.CommandInfo;
+import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.KICK_TYPE;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.WANTED_LEVEL;
 import net.livecar.nuttyworks.npc_police.gui_interface.JailerGUI_BannedItemManager;
@@ -263,6 +264,45 @@ public class Commands_World {
             }
         }
         return false;
+    }
+
+    @CommandInfo(
+            name = "escapesetting",
+            group = "Configuration Defaults",
+            badArgumentsMessage = "command_escapesetting_args",
+            helpMessage = "command_escapesetting_help",
+            arguments = {"--world|--jail", "<world>|<jail>"},
+            permission = "npcpolice.settings.escapesetting",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 0
+    )
+    public boolean worldConfig_EscapeSetting(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (!policeRef.getJailManager.containsWorld(serverWorld)) {
+            // Add the world to the settings
+            policeRef.getJailManager.addWorldSetting(serverWorld, new World_Setting(serverWorld));
+        }
+
+        if (selectedJail != null) {
+            if (selectedJail.escapeSetting.next() == null)
+                selectedJail.escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
+            else
+                selectedJail.escapeSetting = selectedJail.escapeSetting.next();
+
+            // Need to run the jail settings
+            policeRef.getMessageManager.sendMessage(sender, "jail_settings.jail_information", selectedJail);
+            return true;
+
+        }
+
+        World_Setting worldConfig = policeRef.getJailManager.getWorldSettings(serverWorld);
+        if (worldConfig.getEscapeSetting().next() == null)
+            worldConfig.setEscapeSetting(Enumerations.ESCAPE_SETTING.NOTSET);
+        else
+            worldConfig.setEscapeSetting(worldConfig.getEscapeSetting().next());
+
+        policeRef.getMessageManager.sendMessage(sender, "world_settings.settings_menu", selectedWorld);
+        return true;
     }
 
 

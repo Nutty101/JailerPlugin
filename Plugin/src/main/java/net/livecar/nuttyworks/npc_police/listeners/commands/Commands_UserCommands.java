@@ -250,7 +250,7 @@ public class Commands_UserCommands {
             group = "Player Commands",
             badArgumentsMessage = "command_setlevel_args",
             helpMessage = "command_setlevel_help",
-            arguments = {"--player|NONE|MINIMUM|LOW|MEDIUM|HIGH", "<PLAYERNAME>", "NONE|MINIMUM|LOW|MEDIUM|HIGH"},
+            arguments = {"--player|NONE|MINIMUM|ENABLED_NOPAY|ENABLED_PAY|DISABLED", "<PLAYERNAME>", "NONE|MINIMUM|ENABLED_NOPAY|ENABLED_PAY|DISABLED"},
             permission = "npcpolice.admin.setlevel",
             allowConsole = true,
             minArguments = 1,
@@ -276,7 +276,7 @@ public class Commands_UserCommands {
                 policeRef.getPlayerManager.setPlayerWantedLevel(playerRecord.getPlayer(), wantedStatus, JAILED_BOUNTY.MANUAL);
                 policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_setlevel_changed", playerRecord);
             } else {
-                policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_setlevel_bad", "NONE|MINIMUM|LOW|MEDIUM|HIGH");
+                policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_setlevel_bad", "NONE|MINIMUM|ENABLED_NOPAY|ENABLED_PAY|DISABLED");
             }
         } else {
             policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_setlevel_usage", playerRecord);

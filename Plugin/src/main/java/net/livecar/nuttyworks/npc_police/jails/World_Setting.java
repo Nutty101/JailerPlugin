@@ -1,5 +1,6 @@
 package net.livecar.nuttyworks.npc_police.jails;
 
+import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.KICK_TYPE;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.STATE_SETTING;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.WANTED_LEVEL;
@@ -25,7 +26,6 @@ public class World_Setting {
     public HashMap<String, Jail_Setting> jail_Configs = null;
     public ItemStack[] bannedItems = null;
 
-
     // World Name
     private String world_Name = "";
 
@@ -42,6 +42,9 @@ public class World_Setting {
     private WANTED_LEVEL wanted_Maximum = WANTED_LEVEL.GLOBAL;
     private KICK_TYPE wanted_KickType = KICK_TYPE.NOTSET;
     private String wanted_KickLocation = "";
+
+    // Enabled features
+    private Enumerations.ESCAPE_SETTING escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
 
     // Bounty Settings
     private Double bounty_Damage = -1.0D;
@@ -511,6 +514,16 @@ public class World_Setting {
             onFree_InventoryAction = STATE_SETTING.FALSE;
         else
             onFree_InventoryAction = action;
+    }
+
+    public Enumerations.ESCAPE_SETTING getEscapeSetting()
+    {
+        return this.escapeSetting;
+    }
+
+    public void setEscapeSetting(Enumerations.ESCAPE_SETTING enabled)
+    {
+        this.escapeSetting = enabled;
     }
 
 }

@@ -541,6 +541,25 @@ public class Messages_Manager {
             if (message.toLowerCase().contains("<currentjail.setting.escapeddelay>"))
                 message = message.replaceAll("<currentjail\\.setting\\.escapeddelay>", jailSetting.escaped_Delay < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(jailSetting.escaped_Delay));
 
+
+            if (message.toLowerCase().contains("<currentjail.setting.escapesetting>")) {
+                switch (getStorageReference.getJailManager.getEscapeSetting(jailSetting.jailWorld, jailSetting))
+                {
+                    case NOTSET:    //Default action (Global default = yellow)
+                        message = message.replaceAll("<currentjail\\.setting\\.escapesetting>", "dark_aqua");
+                        break;
+                    case ENABLED_NOPAY:       //Green = Escape enabled, allow users to pay the fine even with prior escape
+                        message = message.replaceAll("<currentjail\\.setting\\.escapesetting>", "dark_green");
+                        break;
+                    case ENABLED_PAY:    //Yellow = Escape enabled, no one can pay fines for users escaped prior
+                        message = message.replaceAll("<currentjail\\.setting\\.escapesetting>", "gold");
+                        break;
+                    case DISABLED:      //RED = Escape disabled, no one can pay fines for users escaped prior
+                        message = message.replaceAll("<currentjail\\.setting\\.escapesetting>", "dark_red");
+                        break;
+                }
+            }
+
             if (message.toLowerCase().contains("<currentjail.wanted.minlevel>"))
                 message = message.replaceAll("<currentjail\\.wanted\\.minlevel>", this.getResultMessage("result_Messages.wantedlevel_" + jailSetting.minWanted.toString().toLowerCase())[0]);
             if (message.toLowerCase().contains("<currentjail.wanted.maxlevel>"))
@@ -638,6 +657,24 @@ public class Messages_Manager {
                 message = message.replaceAll("<worldsetting\\.notice\\.theftdist>", worldSetting.getTheft_Distance() < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getTheft_Distance()));
             if (message.toLowerCase().contains("<worldsetting.notice.theftdelay>"))
                 message = message.replaceAll("<worldsetting\\.notice\\.theftdelay>", worldSetting.getTheft_Delay() < 0.0D ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getTheft_Delay()));
+
+            if (message.toLowerCase().contains("<worldsetting.setting.escapesetting>")) {
+                switch (getStorageReference.getJailManager.getEscapeSetting(Bukkit.getServer().getWorld(worldSetting.getWorldName())))
+                {
+                    case NOTSET:    //Default action (Global default = yellow)
+                        message = message.replaceAll("<worldsetting\\.setting\\.escapesetting>", "dark_aqua");
+                        break;
+                    case ENABLED_NOPAY:       //Green = Escape enabled, allow users to pay the fine even with prior escape
+                        message = message.replaceAll("<worldsetting\\.setting\\.escapesetting>", "dark_green");
+                        break;
+                    case ENABLED_PAY:    //Yellow = Escape enabled, no one can pay fines for users escaped prior
+                        message = message.replaceAll("<worldsetting\\.setting\\.escapesetting>", "gold");
+                        break;
+                    case DISABLED:      //RED = Escape disabled, no one can pay fines for users escaped prior
+                        message = message.replaceAll("<worldsetting\\.setting\\.escapesetting>", "dark_red");
+                        break;
+                }
+            }
 
             if (message.toLowerCase().contains("<worldsetting.inventory.onarrest>"))
                 message = message.replaceAll("<worldsetting\\.inventory\\.onarrest>", worldSetting.onArrest_InventoryAction() == STATE_SETTING.NOTSET ? this.getResultMessage("result_Messages.notset")[0] : worldSetting.onArrest_InventoryAction() == STATE_SETTING.FALSE ? "X\",\"color\":\"red" : "✔\",\"color\":\"yellow");

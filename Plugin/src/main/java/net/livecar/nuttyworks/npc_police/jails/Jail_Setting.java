@@ -1,5 +1,6 @@
 package net.livecar.nuttyworks.npc_police.jails;
 
+import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.STATE_SETTING;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.WANTED_LEVEL;
 import org.bukkit.Bukkit;
@@ -35,6 +36,9 @@ public class Jail_Setting {
 
     public Location lockedInventoryLocation = null;
     public Location freeSpawnPoint = null;
+
+    // Escaped Enabled
+    public Enumerations.ESCAPE_SETTING escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
 
     // Player Notices
     public int escaped_Distance = -1;

@@ -90,6 +90,18 @@ public class PlayerDataManager {
         if (plrRecord != null) {
             switch (wantedStatus) {
                 case ESCAPED:
+                    plrRecord.setNewStatus(wantedStatus, changeReason);
+                    plrRecord.lastNotification = new Date();
+                    if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getWorldSettings().getJailedGroup().isEmpty())
+                        getStorageReference.getPermissionManager.playerRemoveGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
+                    if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getWorldSettings().getWantedGroup().isEmpty())
+                        getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
+                    if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getWorldSettings().getEscapedGroup().isEmpty())
+                        getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
+
+                    if (player.isOnline())
+                        getStorageReference.getMessageManager.sendMessage(player.getPlayer(), "general_messages.config_command_setstatus_wanted", plrRecord);
+                    break;
                 case WANTED:
                     plrRecord.setNewStatus(wantedStatus, changeReason);
                     plrRecord.lastNotification = new Date();
@@ -363,6 +375,11 @@ public class PlayerDataManager {
                             if (plrRecord.getLastCheck() == null)
                                 plrRecord.setLastCheck(new Date());
 
+
+                            if (!bIsInJail && getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(),plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
+                                //Set the player to a wanted status.
+
+                            }
                             if (!bIsInJail) {
                                 // They escaped! Remove from the list and let them know
                                 // they have a warrant now.
@@ -370,7 +387,11 @@ public class PlayerDataManager {
 
                                     if (onlinePlayer.getUniqueId().equals(plrRecord.getPlayerUUID())) {
                                         // Let the player know they escaped...
-                                        getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice", plrRecord);
+                                        if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
+                                            getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice_wanted", plrRecord);
+                                        } else {
+                                            getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice", plrRecord);
+                                        }
                                     } else {
                                         if (!plrRecord.getPlayer().getWorld().equals(onlinePlayer.getWorld()))
                                             continue;
@@ -397,9 +418,13 @@ public class PlayerDataManager {
                                     }
                                 }
 
-                                Double addedBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
-                                plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_ESCAPED, addedBounty);
-                                plrRecord.setNewStatus(CURRENT_STATUS.ESCAPED, WANTED_REASONS.ESCAPE);
+                                if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
+                                    plrRecord.setNewStatus(CURRENT_STATUS.WANTED, WANTED_REASONS.ESCAPE);
+                                } else {
+                                    Double addedBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
+                                    plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_ESCAPED, addedBounty);
+                                    plrRecord.setNewStatus(CURRENT_STATUS.ESCAPED, WANTED_REASONS.ESCAPE);
+                                }
                                 try {
                                     for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.PLAYER_ESCAPED, plrRecord.getPlayer().getWorld(), plrRecord.currentJail)) {
                                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), sMsg, null, plrRecord, null, null, getStorageReference.getJailManager.getWorldSettings(plrRecord.getPlayer().getWorld().getName()), null, null, 0));
@@ -411,7 +436,7 @@ public class PlayerDataManager {
                                 plrRecord.setLastEscape(new Date());
                                 if (getStorageReference.getPermissionManager != null) {
                                     getStorageReference.getPermissionManager.playerRemoveGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
-                                    getStorageReference.getPermissionManager.playerRemoveGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
+                                    getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
                                     getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
                                 }
 

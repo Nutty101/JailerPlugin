@@ -140,33 +140,37 @@ public class JailerGUI_Interface {
         if (getStorageReference.hasPermissions(event.getPlayer(), "npcpolice.fines.payothers")) {
             Arrest_Record plrRecord = jmenuData.GetPlayerData();
 
-            if (plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && plrRecord.getPriorStatus() != CURRENT_STATUS.ESCAPED) {
+            switch (getStorageReference.getJailManager.getEscapeSetting(plrRecord.currentJail.jailWorld, plrRecord.currentJail))
+            {
+                case NOTSET:
+                case ENABLED_NOPAY:
+                    if ((plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && plrRecord.getPriorStatus() == CURRENT_STATUS.ESCAPED))
+                        return;
+            }
 
-                //@Since 2.2.1 - First attempt to raise the event and see if anyone covers the payment prior to the economy plugin.
-                PlayerPayBountyEvent playerPayBountyEvent = new Core_PlayerPayBountyEvent(getStorageReference, plrRecord.getOfflinePlayer(), event.getPlayer(), plrRecord.getBounty(), plrRecord);
-                try { Bukkit.getServer().getPluginManager().callEvent(playerPayBountyEvent);} catch (Exception err) {}
+            //@Since 2.2.1 - First attempt to raise the event and see if anyone covers the payment prior to the economy plugin.
+            PlayerPayBountyEvent playerPayBountyEvent = new Core_PlayerPayBountyEvent(getStorageReference, plrRecord.getOfflinePlayer(), event.getPlayer(), plrRecord.getBounty(), plrRecord);
+            try { Bukkit.getServer().getPluginManager().callEvent(playerPayBountyEvent);} catch (Exception err) {}
 
-                if (playerPayBountyEvent.isCancelled())
-                    return;
+            if (playerPayBountyEvent.isCancelled())
+                return;
 
-                if (playerPayBountyEvent.getBountyPaid()) {
+            if (playerPayBountyEvent.getBountyPaid()) {
+                plrRecord.releasePlayer();
+                return;
+            }
+
+            if (getStorageReference.getEconomyManager != null) {
+                if (getStorageReference.getEconomyManager.getBalance(event.getPlayer()) >= ((double) (plrRecord.getBounty()))) {
+                    Arrest_Record payorRecord = getStorageReference.getPlayerManager.getPlayer(event.getPlayer().getUniqueId());
+
+                    getStorageReference.getMessageManager.sendMessage(event.getPlayer(), "judge_interaction.pay_user", jmenuData.getTrait(), plrRecord);
+                    getStorageReference.getEconomyManager.withdrawPlayer(event.getPlayer(), ((double) plrRecord.getBounty()));
+                    getStorageReference.getMessageManager.sendMessage(plrRecord.getPlayer(), "judge_interaction.other_paid", jmenuData.getTrait(), plrRecord, payorRecord, jmenuData.GetJailData());
+
                     plrRecord.releasePlayer();
-                    return;
-                }
-
-
-                if (getStorageReference.getEconomyManager != null) {
-                    if (getStorageReference.getEconomyManager.getBalance(event.getPlayer()) >= ((double) (plrRecord.getBounty()))) {
-                        Arrest_Record payorRecord = getStorageReference.getPlayerManager.getPlayer(event.getPlayer().getUniqueId());
-
-                        getStorageReference.getMessageManager.sendMessage(event.getPlayer(), "judge_interaction.pay_user", jmenuData.getTrait(), plrRecord);
-                        getStorageReference.getEconomyManager.withdrawPlayer(event.getPlayer(), ((double) plrRecord.getBounty()));
-                        getStorageReference.getMessageManager.sendMessage(plrRecord.getPlayer(), "judge_interaction.other_paid", jmenuData.getTrait(), plrRecord, payorRecord, jmenuData.GetJailData());
-
-                        plrRecord.releasePlayer();
-                    } else {
-                        getStorageReference.getMessageManager.sendMessage(event.getPlayer(), "judge_interaction.to_broke", jmenuData.getTrait(), plrRecord);
-                    }
+                } else {
+                    getStorageReference.getMessageManager.sendMessage(event.getPlayer(), "judge_interaction.to_broke", jmenuData.getTrait(), plrRecord);
                 }
             }
         }
@@ -187,11 +191,26 @@ public class JailerGUI_Interface {
         int nCnt = 0;
         for (Arrest_Record playerRecord : getStorageReference.getPlayerManager.getPlayerRecords()) {
             if (playerRecord.isOnline()) {
-                if (playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && playerRecord.getPriorStatus() != CURRENT_STATUS.ESCAPED && getStorageReference.hasPermissions(event.getPlayer(), "npcpolice.fines.payothers")) {
-                    TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(Action.PayPlayer, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), "gui_menu.list_serving_bail", jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
-                    nCnt++;
-                } else if (playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED) {
-                    TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(Action.Arrested, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), "gui_menu.list_serving_nobail", jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
+
+                if (playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED) {
+                    Action plrAction = Action.PayPlayer;
+                    String message = "gui_menu.list_serving_bail";
+
+                    if (!getStorageReference.hasPermissions(event.getPlayer(), "npcpolice.fines.payothers")) {
+                        plrAction = Action.Arrested;
+                        message = "gui_menu.list_serving_bail";
+                    }
+
+                    switch (getStorageReference.getJailManager.getEscapeSetting(playerRecord.currentJail.jailWorld, playerRecord.currentJail)) {
+                        case NOTSET:
+                        case ENABLED_NOPAY:
+                            if ((playerRecord.getCurrentStatus() == CURRENT_STATUS.JAILED && playerRecord.getPriorStatus() == CURRENT_STATUS.ESCAPED)) {
+                                plrAction = Action.Arrested;
+                                message = "gui_menu.list_serving_nobail";
+                            }
+                    }
+
+                    TransportMenu.setOption(nCnt, getStorageReference.getVersionBridge.createPlayerHead(playerRecord.getOfflinePlayer()), new JailMenuData(plrAction, playerRecord, jmenuData.GetJailData(), jmenuData.getNPC(), jmenuData.getTrait()), playerRecord.getPlayer().getName(), getStorageReference.getMessageManager.buildMessage(event.getPlayer(), message, jmenuData.getTrait(), playerRecord, null, jmenuData.GetJailData(), null, jmenuData.getNPC(), null, 0));
                     nCnt++;
                 }
             }

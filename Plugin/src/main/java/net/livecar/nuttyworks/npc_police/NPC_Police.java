@@ -168,7 +168,7 @@ public class NPC_Police {
         //Populate the commands
         getCommandManager.registerCommandClass(Commands_UserCommands.class);
         getCommandManager.registerCommandClass(Commands_Admin.class);
-        getCommandManager.registerCommandClass(Commands_NPCSettings_.class);
+        getCommandManager.registerCommandClass(Commands_NPCSettings.class);
         getCommandManager.registerCommandClass(Commands_GlobalSettings.class);
         getCommandManager.registerCommandClass(Commands_World.class);
         getCommandManager.registerCommandClass(Commands_GroupConfig.class);

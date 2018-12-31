@@ -133,8 +133,6 @@ public class DamageListener implements Listener {
                         getStorageReference.getSentinelPlugin.clearTarget(npc, player);
                     }
 
-                    plrRecord.setNewStatus(CURRENT_STATUS.JAILED, WANTED_REASONS.BOUNTY);
-
                     // Send message that player X was arrested to others, then
                     // let the player know they were arrested
 

@@ -82,6 +82,8 @@ public class Arrest_Record {
                 statistics.put("ARRESTED", statCount);
                 break;
             case ESCAPED:
+                if (getStorageReference.getJailManager.getEscapeSetting(currentJail.jailWorld, currentJail) == ESCAPE_SETTING.DISABLED)
+                    newStatus = CURRENT_STATUS.WANTED;
             case FREE:
             case WANTED:
                 if (statistics.containsKey(newStatus.toString())) {
@@ -823,6 +825,7 @@ public class Arrest_Record {
         setJailed(jailRecord);
         setJailedLocation(jailRecord.cellLocations.get(cellIndex));
         clearWanted();
+        this.priorStatus = this.currentStatus;
         this.currentStatus = CURRENT_STATUS.JAILED;
 
         if (length > 0) {

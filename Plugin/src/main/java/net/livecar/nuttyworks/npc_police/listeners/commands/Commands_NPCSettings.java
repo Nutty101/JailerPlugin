@@ -9,7 +9,7 @@ import net.livecar.nuttyworks.npc_police.jails.World_Setting;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
 import org.bukkit.command.CommandSender;
 
-public class Commands_NPCSettings_ {
+public class Commands_NPCSettings {
 
     @CommandInfo(
             name = "setnpcpvp",

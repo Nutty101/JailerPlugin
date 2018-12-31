@@ -180,6 +180,27 @@ public class Enumerations {
         }
     }
 
+    public enum ESCAPE_SETTING {
+        NOTSET, ENABLED_NOPAY, ENABLED_PAY, DISABLED {
+            @Override
+            public ESCAPE_SETTING next() {
+                return null;
+            }
+        };
+
+        public static boolean contains(String value) {
+            for (ESCAPE_SETTING ename : ESCAPE_SETTING.values()) {
+                if (ename.toString().equalsIgnoreCase(value))
+                    return true;
+            }
+            return false;
+        }
+
+        public ESCAPE_SETTING next() {
+            return values()[ordinal() + 1];
+        }
+    }
+
     public enum KICK_TYPE {
         NOTSET, ARREST_SERVER, ARREST_WORLD, CHANGE_SERVER, CHANGE_WORLD {
             @Override
