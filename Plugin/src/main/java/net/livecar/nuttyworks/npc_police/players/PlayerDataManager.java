@@ -287,6 +287,10 @@ public class PlayerDataManager {
 
                 }
 
+                int secondsPassed = ((int) (new Date().getTime() - playerKP.getValue().getLastCheck().getTime()) / 1000);
+                if (secondsPassed == 0)
+                    continue;
+
                 try {
                     Boolean bIsInJail = false;
 
@@ -439,11 +443,11 @@ public class PlayerDataManager {
                                             bountyType = JAILED_BOUNTY.TIMES_CELLOUT_NIGHT;
 
                                         timeBounty = getStorageReference.getJailManager.getBountySetting(bountyType, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
-                                        plrRecord.changeBounty(bountyType, (int) (timeBounty * secondsPast));
+                                        plrRecord.changeBounty(bountyType, (Double) (timeBounty * secondsPast));
                                     }
 
                                     timeBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.TIMES_JAILED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
-                                    plrRecord.changeBounty(JAILED_BOUNTY.TIMES_JAILED, (int) (timeBounty * secondsPast));
+                                    plrRecord.changeBounty(JAILED_BOUNTY.TIMES_JAILED, (Double) (timeBounty * secondsPast));
 
                                     if (plrRecord.getBounty() > 0) {
 

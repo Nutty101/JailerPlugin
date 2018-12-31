@@ -289,8 +289,9 @@ public class Arrest_Record {
 
         if (timeBounty > -0.0000001)
             return Long.MAX_VALUE;
-        if (bounty.longValue() > 0 && timeBounty.longValue() > 0)
-            secondsLeft += (bounty.longValue() / (0 - timeBounty.longValue()));
+
+        if (bounty > 0 && timeBounty != 0.0)
+            secondsLeft += (int) (bounty / Math.abs(timeBounty));
 
         return secondsLeft;
     }
