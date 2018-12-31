@@ -398,7 +398,7 @@ judge_interaction:
   to_broke: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You don't have the money to pay any fines!\",\"color\":\"green\"}]"
   fines_paid: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"Your sentence has been lifted. I hope I do not see you again any time soon.\",\"color\":\"green\"}]"
   other_paid: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"<targetrecord.name> \",\"color\":\"yellow\"},{\"text\":\" has paid $<player.bounty> in fines for your release. I hope I do not see you around here anytime soon.\",\"color\":\"green\"}]"
-  pay_user: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You have paid \",\"color\":\"green\"},{\"text\":\"$<player.bounty>  \",\"color\":\"yellow\"},{\"text\":\" in bail for \",\"color\":\"green\"},{\"text\":\"<player.name>.\",\"color\":\"yellow\"}]"
+  pay_user: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You have paid \",\"color\":\"green\"},{\"text\":\"$<player.bounty>\",\"color\":\"yellow\"},{\"text\":\" in bail for \",\"color\":\"green\"},{\"text\":\"<player.name>.\",\"color\":\"yellow\"}]"
 
 gui_menu:
   main_title: Jail Menu
