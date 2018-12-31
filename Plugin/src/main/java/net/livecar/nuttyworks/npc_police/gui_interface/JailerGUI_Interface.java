@@ -159,8 +159,8 @@ public class JailerGUI_Interface {
                     if (getStorageReference.getEconomyManager.getBalance(event.getPlayer()) >= ((double) (plrRecord.getBounty()))) {
                         Arrest_Record payorRecord = getStorageReference.getPlayerManager.getPlayer(event.getPlayer().getUniqueId());
 
-                        getStorageReference.getEconomyManager.withdrawPlayer(event.getPlayer(), ((double) plrRecord.getBounty()));
                         getStorageReference.getMessageManager.sendMessage(event.getPlayer(), "judge_interaction.pay_user", jmenuData.getTrait(), plrRecord);
+                        getStorageReference.getEconomyManager.withdrawPlayer(event.getPlayer(), ((double) plrRecord.getBounty()));
                         getStorageReference.getMessageManager.sendMessage(plrRecord.getPlayer(), "judge_interaction.other_paid", jmenuData.getTrait(), plrRecord, payorRecord, jmenuData.GetJailData());
 
                         plrRecord.releasePlayer();

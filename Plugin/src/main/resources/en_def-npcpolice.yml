@@ -1,4 +1,5 @@
-﻿general_messages:
+﻿languageupdated: "2018-12-31"
+general_messages:
   commands_invalidarguments: "[{\"text\":\"Invalid arguments for the command \",\"color\":\"RED\"},<message>]"
   no_permissions: "[{\"text\":\"[\",\"color\":\"yellow\"},{\"text\":\"NPCPolice\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"yellow\"},{\"text\":\"No permissions\"}]"
   invalid_command:  "[{\"text\":\"[\",\"color\":\"yellow\"},{\"text\":\"NPCPolice\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"yellow\"},{\"text\":\"Invalid command\"}]"
@@ -396,8 +397,8 @@ judge_interaction:
   serving_time: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"Since you escaped the last time you were in jail, you cannot pay your way out and must complete your term.\",\"color\":\"green\"}]"
   to_broke: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You don't have the money to pay any fines!\",\"color\":\"green\"}]"
   fines_paid: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"Your sentence has been lifted. I hope I do not see you again any time soon.\",\"color\":\"green\"}]"
-  other_paid: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"<targetrecord.playername> \",\"color\":\"yellow\"},{\"text\":\" has paid $<player.bounty> in fines for your release. I hope I do not see you around here anytime soon.\",\"color\":\"green\"}]"
-  pay_user: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You have paid \",\"color\":\"green\"},{\"text\":\"$<record.bounty>  \",\"color\":\"yellow\"},{\"text\":\" in bail for \",\"color\":\"green\"},{\"text\":\"<record.playername>.\",\"color\":\"yellow\"}]"
+  other_paid: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"<targetrecord.name> \",\"color\":\"yellow\"},{\"text\":\" has paid $<player.bounty> in fines for your release. I hope I do not see you around here anytime soon.\",\"color\":\"green\"}]"
+  pay_user: "[{\"text\":\"[\",\"color\":\"red\"},{\"text\":\"<npc.name>\",\"color\":\"green\"},{\"text\":\"] \",\"color\":\"blue\"},{\"text\":\"You have paid \",\"color\":\"green\"},{\"text\":\"$<player.bounty>  \",\"color\":\"yellow\"},{\"text\":\" in bail for \",\"color\":\"green\"},{\"text\":\"<player.name>.\",\"color\":\"yellow\"}]"
 
 gui_menu:
   main_title: Jail Menu
