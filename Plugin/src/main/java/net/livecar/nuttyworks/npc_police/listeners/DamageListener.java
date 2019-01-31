@@ -48,6 +48,15 @@ public class DamageListener implements Listener {
         if (getStorageReference.getJailManager.getWorldJails(event.getDamager().getLocation().getWorld().getName()).length == 0)
             return;
 
+        switch (event.getCause())
+        {
+            case THORNS:
+                return;
+            case DRAGON_BREATH:
+                return;
+        }
+
+
         Entity damager = event.getDamager();
         Entity damaged = event.getEntity();
 
@@ -63,6 +72,8 @@ public class DamageListener implements Listener {
             if (damager instanceof LingeringPotion) {
                 damager = (Entity) ((LingeringPotion) damager).getShooter();
             }
+
+
         }
 
         if ((!damaged.hasMetadata("NPC")) && (damager.hasMetadata("NPC")))
