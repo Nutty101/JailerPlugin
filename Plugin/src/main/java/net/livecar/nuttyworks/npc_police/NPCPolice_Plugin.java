@@ -15,7 +15,9 @@ import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plu
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plugin_1_7;
 import net.livecar.nuttyworks.npc_police.utilities.Utilities;
 import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_6_2_2;
+import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_7_0_0;
 import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_7_0_1;
+import net.livecar.nuttyworks.npc_police.worldguard.WorldGuard_7_0_3;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -87,10 +89,14 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
             if (!goodVersion) {
                 getServer().getLogger().log(Level.WARNING, "This Worldguard version is not supported, custom flags are not enabled");
             } else {
-                if (majorVersion == 6)
+                if (majorVersion == 6 && WorldGuard_6_2_2.isValidVersion())
                     policeStorage_Class.getWorldGuardPlugin = new WorldGuard_6_2_2();
-                else if (majorVersion == 7)
+                else if (majorVersion == 7 && WorldGuard_7_0_1.isValidVersion())
                     policeStorage_Class.getWorldGuardPlugin = new WorldGuard_7_0_1();
+                else if (majorVersion == 7 && WorldGuard_7_0_3.isValidVersion())
+                    policeStorage_Class.getWorldGuardPlugin = new WorldGuard_7_0_3();
+                else if (majorVersion == 7 && WorldGuard_7_0_0.isValidVersion())
+                    policeStorage_Class.getWorldGuardPlugin = new WorldGuard_7_0_0();
 
                 policeStorage_Class.getWorldGuardPlugin.registerFlags();
             }
@@ -206,7 +212,7 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
                 if (majorVersion == 6)
                     Bukkit.getPluginManager().registerEvents((WorldGuard_6_2_2) policeStorage_Class.getWorldGuardPlugin, this);
                 else if (majorVersion == 7)
-                    Bukkit.getPluginManager().registerEvents((WorldGuard_7_0_1) policeStorage_Class.getWorldGuardPlugin, this);
+                    Bukkit.getPluginManager().registerEvents(policeStorage_Class.getWorldGuardPlugin, this);
 
                 policeStorage_Class.getWorldGuardPlugin.registerHandlers();
             }
