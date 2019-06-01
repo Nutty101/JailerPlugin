@@ -36,7 +36,6 @@ public abstract class VersionBridge implements Listener {
     public static final StringFlag WANTED_NPC_SETTING_FLAG = new StringFlag("np-npc-wanted");
 
     //Activity Flags
-
     public static final BooleanFlag ARREST_FLAG = new BooleanFlag("np-noarrest");
     public static final BooleanFlag PVP_FLAG = new BooleanFlag("np-monitors-pvp");
     public static final BooleanFlag MURDER_FLAG = new BooleanFlag("np-mon-murder");
@@ -44,7 +43,6 @@ public abstract class VersionBridge implements Listener {
     public static final BooleanFlag REGIONGUARD_FLAG = new BooleanFlag("np-regionguard");
 
     //Wanted Status Flags
-
     public static final CurrentStatusFlag AUTOFLAG_FLAG = new CurrentStatusFlag("np-af");
     public static final BooleanFlag AUTOFLAG_GUARDSIGHT_FLAG = new BooleanFlag("np-af-requiresight");
     public static final StringFlag AUTOFLAG_CAUGHT_FLAG = new StringFlag("np-af-caught");

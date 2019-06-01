@@ -58,6 +58,8 @@ public class WorldGuard_7_0_0 extends VersionBridge implements Listener {
         WorldGuard.getInstance().getFlagRegistry().register(BOUNTY_WANTED_FLAG);
         WorldGuard.getInstance().getFlagRegistry().register(BOUNTY_MAXIMUM_FLAG);
 
+        WorldGuard.getInstance().getFlagRegistry().register(BOUNTY_MAXIMUM_FLAG);
+
     }
 
     @Override

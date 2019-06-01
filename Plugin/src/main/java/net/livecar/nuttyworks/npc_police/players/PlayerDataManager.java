@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class PlayerDataManager {
 
@@ -44,10 +45,13 @@ public class PlayerDataManager {
             Runnable task = new Runnable() {
                 @Override
                 public void run() {
-                    MonitorTask();
+                    try {
+                        MonitorTask();
+                    } catch (Exception err)
+                    {}
                 }
             };
-            playerMonitorTask.scheduleAtFixedRate(task, 120, 60, TimeUnit.MILLISECONDS);
+            playerMonitorTask.scheduleAtFixedRate(task, 5000, 250, TimeUnit.MILLISECONDS);
         } else {
             playerMonitorTask.shutdown();
         }
@@ -145,7 +149,7 @@ public class PlayerDataManager {
                     SavePlayers();
                 }
             };
-            playerDataMonitorTask.scheduleAtFixedRate(task, 120, 60, TimeUnit.MILLISECONDS);
+            playerDataMonitorTask.scheduleAtFixedRate(task, 120, 15, TimeUnit.SECONDS);
         } else {
             playerDataMonitorTask.shutdown();
             SavePlayers();
@@ -192,6 +196,9 @@ public class PlayerDataManager {
                         if (oTmpNPC.isSpawned()) {
                             if (oTmpNPC.getEntity().getLocation().getWorld().getName() == plrRecord.getPlayer().getLocation().getWorld().getName()) {
                                 NPCPolice_Trait trait = oTmpNPC.getTrait(NPCPolice_Trait.class);
+                                //Check if this NPC needs to realign it's view
+                                trait.randomLook(getStorageReference);
+
                                 if (plrRecord.getCurrentStatus() == CURRENT_STATUS.FREE || plrRecord.getCurrentStatus() == CURRENT_STATUS.ARRESTED && plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED)
                                     if (getStorageReference.getSentinelPlugin != null)
                                         getStorageReference.getSentinelPlugin.clearTarget(oTmpNPC, plrRecord.getPlayer());

@@ -410,4 +410,97 @@ public class Commands_NPCConfig {
         return true;
     }
 
+    @CommandInfo(
+            name = "npcrldegree",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_npcrldegree_args",
+            helpMessage = "command_npcrldegree_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.npc.randomlook",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCRLDegrees(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (npc == null) {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.invalid_npc");
+            return true;
+        }
+        if (!npc.hasTrait(NPCPolice_Trait.class))
+            npc.addTrait(NPCPolice_Trait.class);
+
+        if (inargs.length == 1) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookDegrees= 0;
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookDegrees = Integer.parseInt(inargs[1]);
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+        }
+
+        policeRef.getMessageManager.sendMessage(sender, "npc_settings", npc.getTrait(NPCPolice_Trait.class));
+        return true;
+    }
+
+    @CommandInfo(
+            name = "npcrlmin",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_npcrlmin_args",
+            helpMessage = "command_npcrlmin_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.npc.randomlook",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCRLMin(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (npc == null) {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.invalid_npc");
+            return true;
+        }
+        if (!npc.hasTrait(NPCPolice_Trait.class))
+            npc.addTrait(NPCPolice_Trait.class);
+
+        if (inargs.length == 1) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookIntervalMin= 0;
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookIntervalMin = Integer.parseInt(inargs[1]);
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+        }
+
+        policeRef.getMessageManager.sendMessage(sender, "npc_settings", npc.getTrait(NPCPolice_Trait.class));
+        return true;
+    }
+
+    @CommandInfo(
+            name = "npcrlmax",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_npcrlmax_args",
+            helpMessage = "command_npcrlmax_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.npc.randomlook",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCRLMax(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (npc == null) {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.invalid_npc");
+            return true;
+        }
+        if (!npc.hasTrait(NPCPolice_Trait.class))
+            npc.addTrait(NPCPolice_Trait.class);
+
+        if (inargs.length == 1) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookIntervalMax= 0;
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            npc.getTrait(NPCPolice_Trait.class).idleRandomLookIntervalMax = Integer.parseInt(inargs[1]);
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+        }
+
+        policeRef.getMessageManager.sendMessage(sender, "npc_settings", npc.getTrait(NPCPolice_Trait.class));
+        return true;
+    }
+
 }

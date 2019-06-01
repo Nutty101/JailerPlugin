@@ -71,7 +71,8 @@ public class Messages_Manager {
             logHistory = new ArrayList<LogDetail>();
 
         if (getStorageReference.debugLogLevel.intValue() <= debugLevel.intValue()) {
-            logHistory.add(new LogDetail("[" + debugLevel.toString() + "] " + extendedMessage));
+            String className = new Exception().getStackTrace()[1].getClassName();
+            logHistory.add(new LogDetail(debugLevel.toString() + "|" + className.substring(className.lastIndexOf(".")) + "|" + new Exception().getStackTrace()[1].getMethodName() + "|" + new Exception().getStackTrace()[1].getLineNumber() + "|" + extendedMessage));
 
             if (getStorageReference.pluginInstance.isEnabled()) {
                 Bukkit.getScheduler().scheduleSyncDelayedTask(
@@ -274,6 +275,20 @@ public class Messages_Manager {
                 message = message.replaceAll("<trait\\.time\\.damage>", String.valueOf(npcTrait.time_assault));
             if (message.toLowerCase().contains("<trait.time.murder>"))
                 message = message.replaceAll("<trait\\.time\\.murder>", String.valueOf(npcTrait.time_murder));
+
+            if (message.toLowerCase().contains("<trait.look.degreesicon>"))
+                message = message.replaceAll("<trait\\.look\\.degreesicon>", npcTrait.idleRandomLookDegrees == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+            if (message.toLowerCase().contains("<trait.look.minicon>"))
+                message = message.replaceAll("<trait\\.look\\.minicon>", npcTrait.idleRandomLookIntervalMin == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+            if (message.toLowerCase().contains("<trait.look.maxicon>"))
+                message = message.replaceAll("<trait\\.look\\.maxicon>", npcTrait.idleRandomLookIntervalMax == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+
+            if (message.toLowerCase().contains("<trait.look.degrees>"))
+                message = message.replaceAll("<trait\\.look\\.degrees>", String.valueOf(npcTrait.idleRandomLookDegrees));
+            if (message.toLowerCase().contains("<trait.look.min>"))
+                message = message.replaceAll("<trait\\.look\\.min>", String.valueOf(npcTrait.idleRandomLookIntervalMin));
+            if (message.toLowerCase().contains("<trait.look.max>"))
+                message = message.replaceAll("<trait\\.look\\.max>", String.valueOf(npcTrait.idleRandomLookIntervalMax));
 
         }
 
@@ -606,6 +621,22 @@ public class Messages_Manager {
                 message = message.replaceAll("<worldsetting\\.bounty\\.pvp>", worldSetting.getBounty_PVP() < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getBounty_PVP()));
             if (message.toLowerCase().contains("<worldsetting.bounty.maximum>"))
                 message = message.replaceAll("<worldsetting\\.bounty\\.maximum>", worldSetting.getBounty_Maximum() < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getBounty_Maximum()));
+
+            // Random look
+            if (message.toLowerCase().contains("<worldsetting.look.degreesicon>"))
+                message = message.replaceAll("<worldsetting\\.look\\.degreesicon>", worldSetting.getRandomLook_Degrees() == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+            if (message.toLowerCase().contains("<worldsetting.look.minicon>"))
+                message = message.replaceAll("<worldsetting\\.look\\.minicon>", worldSetting.getRandomLook_Min() == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+            if (message.toLowerCase().contains("<worldsetting.look.maxicon>"))
+                message = message.replaceAll("<worldsetting\\.look\\.maxicon>", worldSetting.getRandomLook_Max()== 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+
+            if (message.toLowerCase().contains("<worldsetting.look.degrees>"))
+                message = message.replaceAll("<worldsetting\\.look\\.degrees>", String.valueOf(worldSetting.getRandomLook_Degrees()));
+            if (message.toLowerCase().contains("<worldsetting.look.min>"))
+                message = message.replaceAll("<worldsetting\\.look\\.min>", String.valueOf(worldSetting.getRandomLook_Min()));
+            if (message.toLowerCase().contains("<worldsetting.look.max>"))
+                message = message.replaceAll("<worldsetting\\.look\\.max>", String.valueOf(worldSetting.getRandomLook_Max()));
+
 
             if (message.toLowerCase().contains("<worldsetting.times.jailed>"))
                 message = message.replaceAll("<worldsetting\\.times\\.jailed>", worldSetting.getTimeInterval_Jailed() == Double.MIN_VALUE ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getTimeInterval_Jailed()));

@@ -1,5 +1,6 @@
 package net.livecar.nuttyworks.npc_police.worldguard;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
@@ -15,19 +16,25 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
+public class WorldGuard_7_0_3 extends VersionBridge implements Listener {
 
     public static boolean isValidVersion() {
         try {
             //Validate that BlockVector3 class exists
             Class.forName("com.sk89q.worldedit.math.BlockVector3");
-            //Validate that getWorldByName method exists (New beta's do not have this function anymore)
-            Class.forName("com.sk89q.worldguard.internal.platform.WorldGuardPlatform").getMethod("getWorldByName",(Class<?>[]) null);
-            return true;
         } catch (Exception e) {
             return false;
         }
+
+        try {
+            //Validate that getWorldByName method exists (New beta's do not have this function anymore)
+            Class.forName("com.sk89q.worldguard.internal.platform.WorldGuardPlatform").getMethod("getWorldByName",(Class<?>[]) null);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
     }
+
 
     @Override
     public void registerFlags() {
@@ -68,7 +75,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                WorldGuard.getInstance().getPlatform().getSessionManager().registerHandler(WorldGuard_7_0_1_RegionalHandler.FACTORY, null);
+                WorldGuard.getInstance().getPlatform().getSessionManager().registerHandler(WorldGuard_7_0_3_RegionalHandler.FACTORY, null);
             }
         }.runTask(Bukkit.getServer().getPluginManager().getPlugin("NPC_Police"));
     }
@@ -86,13 +93,13 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
     @Override
     public List<String> getCurrentRegions(Location loc) {
         BlockVector3 v = BlockVector3.at(loc.getX(), loc.getY(), loc.getZ());
-        return WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(loc.getWorld().getName())).getApplicableRegionsIDs(v);
+        return WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getApplicableRegionsIDs(v);
     }
 
     @Override
     public List<String> getWorldRegions(World world) {
         List<String> regionList = new ArrayList<String>();
-        regionList.addAll(WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(world.getName())).getRegions().keySet());
+        regionList.addAll(WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).getRegions().keySet());
         return regionList;
     }
 
@@ -104,7 +111,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
     @Override
     public boolean isInCell(Location loc) {
         for (String regionName : getCurrentRegions(loc)) {
-            if (WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(loc.getWorld().getName())).getRegion(regionName).getFlag(CELL_FLAG).booleanValue())
+            if (WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getRegion(regionName).getFlag(CELL_FLAG).booleanValue())
                 return true;
         }
         return false;
@@ -113,7 +120,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
     @Override
     public boolean regionArrestable(Location loc) {
         for (String regionName : getCurrentRegions(loc)) {
-            if (WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(loc.getWorld().getName())).getRegion(regionName).getFlag(ARREST_FLAG).booleanValue())
+            if (WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getRegion(regionName).getFlag(ARREST_FLAG).booleanValue())
                 return true;
         }
         return false;
@@ -121,7 +128,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
 
     @Override
     public Location[] getRegionBounds(World world, String regionName) {
-        ProtectedRegion boundRegion = WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(world.getName())).getRegion(regionName);
+        ProtectedRegion boundRegion = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).getRegion(regionName);
         if (boundRegion == null)
             return new Location[0];
 
@@ -142,7 +149,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
             if (regionName == null || regionName.isEmpty())
                 continue;
 
-            ProtectedRegion localRegion = WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(loc.getWorld().getName())).getRegion(regionName);
+            ProtectedRegion localRegion = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(loc.getWorld())).getRegion(regionName);
 
             if (localRegion == null)
                 continue;
@@ -241,7 +248,7 @@ public class WorldGuard_7_0_1 extends VersionBridge implements Listener {
 
     @Override
     public boolean hasRegion(World worldname, String regionName) {
-        return WorldGuard.getInstance().getPlatform().getRegionContainer().get(WorldGuard.getInstance().getPlatform().getWorldByName(worldname.getName())).hasRegion(regionName);
+        return WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(worldname)).hasRegion(regionName);
     }
 
     @Override

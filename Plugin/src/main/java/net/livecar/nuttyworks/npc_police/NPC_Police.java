@@ -13,7 +13,6 @@ import net.livecar.nuttyworks.npc_police.messages.Language_Manager;
 import net.livecar.nuttyworks.npc_police.messages.Messages_Manager;
 import net.livecar.nuttyworks.npc_police.players.PlayerDataManager;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.betonquest.BetonQuest_Interface;
-import net.livecar.nuttyworks.npc_police.thirdpartyplugins.jobs_reborn.JobsReborn_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.leaderheads.LeaderHeads_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.placeholderapi.PlaceHolder_Plugin;
 import net.livecar.nuttyworks.npc_police.utilities.Utilities;
@@ -65,7 +64,6 @@ public class NPC_Police {
     public BungeeCordListener getBungeeListener = null;
     public Citizens getCitizensPlugin;
     public BetonQuest_Interface bqPlugin = null;
-    public JobsReborn_Plugin getJobsRebornPlugin = null;
     public BattleManager_Interface getSentinelPlugin = null;
     public VersionBridge getWorldGuardPlugin = null;
     public Economy getEconomyManager = null;
@@ -104,9 +102,11 @@ public class NPC_Police {
         if (this.currentLanguage.equalsIgnoreCase("en-def"))
             this.currentLanguage = "en_def";
 
-        if (this.getDefaultConfig.contains("debug"))
-            this.debugLogLevel = Level.parse(this.getDefaultConfig.getString("debug"));
-
+        if (this.getDefaultConfig.contains("debug")) {
+            if ("OFF SEVERE WARNING INFO CONFIG FINE FINER FINEST ALL".contains(this.getDefaultConfig.getString("debug").toUpperCase())) {
+                this.debugLogLevel = Level.parse(this.getDefaultConfig.getString("debug").toUpperCase());
+            }
+        }
 
         //Mark the version
         if (pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_8_R3")) {
@@ -142,6 +142,11 @@ public class NPC_Police {
         } else if (pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_13_R2")) {
             Version = 11310;
             getVersionBridge = new MCUtils_1_13_R2();
+            getMessageManager.consoleMessage("console_messages.plugin_version",
+                    pluginInstance.getServer().getVersion().substring(pluginInstance.getServer().getVersion().indexOf('(')));
+        } else if (pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_14_R1") || pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_14_R2")) {
+            Version = 11410;
+            getVersionBridge = new MCUtils_1_14_R1();
             getMessageManager.consoleMessage("console_messages.plugin_version",
                     pluginInstance.getServer().getVersion().substring(pluginInstance.getServer().getVersion().indexOf('(')));
         } else {
@@ -180,14 +185,12 @@ public class NPC_Police {
         getCommandManager.registerCommandClass(Commands_PlayerNotices.class);
 
 
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(
-                this.pluginInstance, new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        getJailManager.loadJailSettings();
-                    }
-                }
-        );
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                getJailManager.loadJailSettings();
+            }
+        }.runTask(pluginInstance);
 
         return true;
     }

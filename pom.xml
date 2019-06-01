@@ -12,6 +12,7 @@
     <modules>
         <module>API</module>
         <module>Plugin</module>
+        <module>V1_14_R1</module>
         <module>V1_13_R2</module>
         <module>V1_12_R1</module>
         <module>V1_11_R1</module>
@@ -19,7 +20,9 @@
         <module>V1_9_R2</module>
         <module>V1_8_R3</module>
         <module>Worldguard_V6_2_2</module>
+        <module>Worldguard-V7_0_0</module>
         <module>Worldguard-V7_0_1</module>
+        <module>Worldguard-V7_0_3</module>
         <module>BetonQuest_V1_9</module>
         <module>Sentinel_Plugin_1_6</module>
         <module>Sentinel_Plugin_1_7</module>
@@ -70,7 +73,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${artifactId}-2_2_${build.number}</finalName>
+        <finalName>${project.artifactId}-2_2_${build.number}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -23,6 +23,15 @@ public class WorldGuard_6_2_2 extends VersionBridge implements Listener {
         getWorldGuardPlugin = WGBukkit.getPlugin();
     }
 
+    public static boolean isValidVersion() {
+        try {
+            Class.forName("com.sk89q.worldguard.bukkit.WGBukkit");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public void registerFlags() {
         getWorldGuardPlugin.getFlagRegistry().register(CELL_FLAG);

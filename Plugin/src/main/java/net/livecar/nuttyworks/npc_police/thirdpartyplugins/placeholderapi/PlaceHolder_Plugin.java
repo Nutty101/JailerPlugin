@@ -1,6 +1,6 @@
 package net.livecar.nuttyworks.npc_police.thirdpartyplugins.placeholderapi;
 
-import me.clip.placeholderapi.external.EZPlaceholderHook;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.CURRENT_STATUS;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
@@ -8,14 +8,34 @@ import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
 
-public class PlaceHolder_Plugin extends EZPlaceholderHook {
+public class PlaceHolder_Plugin extends PlaceholderExpansion {
     private NPC_Police getStorageReference = null;
 
     public PlaceHolder_Plugin(NPC_Police policeRef) {
-        super(policeRef.pluginInstance, "npcpolice");
         getStorageReference = policeRef;
-        this.hook();
     }
+
+    @Override
+    public boolean canRegister() { return true; }
+
+    @Override
+    public String getIdentifier() {
+        return "npcpolice";
+    }
+
+    @Override
+    public String getAuthor() {
+        return "Sir_Nutty";
+    }
+
+    @Override
+    public String getVersion() {
+        return "1.0.0";
+    }
+
+    @Override
+    public boolean persist(){return true;}
+
 
     @Override
     public String onPlaceholderRequest(Player player, String identifier) {

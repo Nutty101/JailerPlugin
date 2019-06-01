@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.logging.Level;
 
 public class Database_Manager {
     private ArrayBlockingQueue<Database_QueuedRequest> processingRequests;
@@ -21,17 +22,19 @@ public class Database_Manager {
 
     public Database_Manager(NPC_Police policeRef) {
         this.getStorageReference = policeRef;
-        processingRequests = new ArrayBlockingQueue<>(100);
-        returnedRequests = new ArrayBlockingQueue<>(100);
+        processingRequests = new ArrayBlockingQueue<>(500);
+        returnedRequests = new ArrayBlockingQueue<>(500);
 
         // What datastorage does the config use
         switch (policeRef.getDefaultConfig.getString("database.type", "sqlite")) {
             case "sqlite":
+                getStorageReference.getMessageManager.debugMessage(Level.FINE, "SQLite");
                 getDatabaseManager = new Database_SqlLite(policeRef, processingRequests, returnedRequests);
                 databaseThread = new Thread((Runnable) this.getDatabaseManager);
                 databaseThread.setName("NPC_Police-SQLite DB");
                 break;
             case "mysql":
+                getStorageReference.getMessageManager.debugMessage(Level.FINE, "MySql");
                 getDatabaseManager = new Database_MySql(policeRef, processingRequests, returnedRequests);
                 databaseThread = new Thread((Runnable) this.getDatabaseManager);
                 databaseThread.setName("NPC_Police-MySql DB");
@@ -45,6 +48,7 @@ public class Database_Manager {
         if (this.databaseThread == null)
             return false;
 
+        getStorageReference.getMessageManager.debugMessage(Level.FINE, "");
         this.databaseThread.start();
 
         queueMonitorID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
@@ -62,6 +66,8 @@ public class Database_Manager {
     public boolean stopDatabase() {
         if (queueMonitorID != -1)
             Bukkit.getServer().getScheduler().cancelTask(queueMonitorID);
+
+        getStorageReference.getMessageManager.debugMessage(Level.FINE, "");
 
         if (this.databaseThread == null)
             return false;
@@ -100,18 +106,22 @@ public class Database_Manager {
     }
 
     public void queueLoadPlayerRequest(UUID playerUUID) {
+        getStorageReference.getMessageManager.debugMessage(Level.FINE,processingRequests.size() + "|" + playerUUID.toString());
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.LOAD_USER, new Arrest_Record(getStorageReference, playerUUID, 0.0D, new HashMap<String, Integer>(), CURRENT_STATUS.FREE, CURRENT_STATUS.FREE)));
     }
 
     public void queueSavePlayerRequest(final Arrest_Record plrRecord) {
+        getStorageReference.getMessageManager.debugMessage(Level.FINE, processingRequests.size() + "|" +plrRecord.getPlayerUUID().toString());
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.SAVE_USER, plrRecord));
     }
 
     public void queueRemovePlayerRequest(final Arrest_Record plrRecord) {
+        getStorageReference.getMessageManager.debugMessage(Level.FINE, processingRequests.size() + "|" +plrRecord.getPlayerUUID().toString());
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.REMOVE_USER, plrRecord));
     }
 
     public void requestUpdatedStats() {
+        getStorageReference.getMessageManager.debugMessage(Level.FINE, processingRequests.size() + "|" +"");
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.LEADERHEADS_TOTALBOUNTIES));
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.LEADERHEADS_MOSTMURDERS));
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.LEADERHEADS_MOSTESCAPES));

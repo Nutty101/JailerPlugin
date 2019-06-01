@@ -5,7 +5,7 @@ version: 2.2.1
 author: Sir_Nutty@Spigot
 website: https://www.spigotmc.org/resources/npc-police.9553/
 api-version: 1.13
-depend: [Citizens]
+depend: [Citizens,Vault]
 loadbefore: [WorldGuard]
 loadafter: [Multiverse]
 commands:

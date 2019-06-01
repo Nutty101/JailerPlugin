@@ -8,7 +8,6 @@ import net.livecar.nuttyworks.npc_police.listeners.DamageListener;
 import net.livecar.nuttyworks.npc_police.listeners.PlayerListener;
 import net.livecar.nuttyworks.npc_police.metrics.BStat_Metrics;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.betonquest.betonquest_1_9.BetonQuest_Plugin_V1_9;
-import net.livecar.nuttyworks.npc_police.thirdpartyplugins.jobs_reborn.JobsReborn_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.leaderheads.LeaderHeads_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.placeholderapi.PlaceHolder_Plugin;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.sentinel.Sentinel_Plugin_1_6;
@@ -129,13 +128,6 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
                 policeStorage_Class.bqPlugin = new BetonQuest_Plugin_V1_9();
                 policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.betonquest_found", getServer().getPluginManager().getPlugin("BetonQuest").getDescription().getVersion());
             }
-        }
-
-        if (getServer().getPluginManager().getPlugin("Jobs") == null) {
-            policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.jobsreborn_notfound");
-        } else {
-            policeStorage_Class.getJobsRebornPlugin = new JobsReborn_Plugin(policeStorage_Class);
-            policeStorage_Class.getMessageManager.consoleMessage("Console_Messages.jobsreborn_found");
         }
 
         if (getServer().getPluginManager().getPlugin("Sentinel") == null) {

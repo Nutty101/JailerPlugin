@@ -68,6 +68,10 @@ public class World_Setting {
     private STATE_SETTING npc_losAttack = STATE_SETTING.NOTSET;
     private STATE_SETTING npc_protect_OnlyAssigned = STATE_SETTING.NOTSET;
 
+    private int npc_RandomLookDegrees = 0;
+    private int npc_RandomLookMin = 0;
+    private int npc_RandomLookMax = 0;
+
     // Player Notices
     private int escaped_Distance = -1;
     private Double escaped_Delay = -1.0D;
@@ -284,6 +288,42 @@ public class World_Setting {
         bounty_Maximum = bounty;
     }
 
+    public int getRandomLook_Degrees() {
+        return this.npc_RandomLookDegrees;
+    }
+
+    public void setRandomLook_Degrees(int degrees) {
+        if (degrees < 0 || degrees > 360) {
+            this.npc_RandomLookDegrees = 0;
+            return;
+        }
+        this.npc_RandomLookDegrees = degrees;
+    }
+
+    public int getRandomLook_Min() {
+        return this.npc_RandomLookMin;
+    }
+
+    public void setRandomLook_Min(int seconds) {
+        if (seconds < 0 || seconds > 360) {
+            this.npc_RandomLookMin = 0;
+            return;
+        }
+        this.npc_RandomLookMin = seconds;
+    }
+
+    public int getRandomLook_Max() {
+        return this.npc_RandomLookMax;
+    }
+
+    public void setRandomLook_Max(int seconds) {
+        if (seconds < 0 || seconds > 360) {
+            this.npc_RandomLookMax = 0;
+            return;
+        }
+        this.npc_RandomLookMax = seconds;
+    }
+
 
     public Double getTimeInterval_Jailed() {
         return times_Jailed;
@@ -365,7 +405,6 @@ public class World_Setting {
             return;
         npc_minBountyWanted = amount;
     }
-
 
     public STATE_SETTING getMonitorPVP() {
         return this.npc_monitorPVP;

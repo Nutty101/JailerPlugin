@@ -4,6 +4,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.annotations.CommandInfo;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.STATE_SETTING;
+import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
 import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.jails.World_Setting;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
@@ -163,6 +164,81 @@ public class Commands_NPCSettings {
             else
                 policeRef.getJailManager.getWorldSettings(serverWorld).setProtect_OnlyAssigned(STATE_SETTING.NOTSET);
 
+
+        policeRef.getCommandManager.registeredCommands.get("world").invokeCommand(policeRef, sender, npc, inargs, playerRecord, serverWorld, selectedWorld, selectedJail);
+        return true;
+    }
+
+    @CommandInfo(
+            name = "setnpcrldegree",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_setnpcrldegree_args",
+            helpMessage = "command_setnpcrldegree_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.settings.npc.lookdegrees",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCLookDegrees(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (inargs.length == 1) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Degrees(0);
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Degrees(Integer.parseInt(inargs[1]));
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+            return true;
+        }
+
+        policeRef.getCommandManager.registeredCommands.get("world").invokeCommand(policeRef, sender, npc, inargs, playerRecord, serverWorld, selectedWorld, selectedJail);
+        return true;
+    }
+
+    @CommandInfo(
+            name = "setnpcrlmin",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_setnpcrlmin_args",
+            helpMessage = "command_setnpcrlmin_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.settings.npc.lookmin",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCLookMin(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (inargs.length == 1) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Min(0);
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Min(Integer.parseInt(inargs[1]));
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+            return true;
+        }
+
+        policeRef.getCommandManager.registeredCommands.get("world").invokeCommand(policeRef, sender, npc, inargs, playerRecord, serverWorld, selectedWorld, selectedJail);
+        return true;
+    }
+
+    @CommandInfo(
+            name = "setnpcrlmin",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_setnpcrlmin_args",
+            helpMessage = "command_setnpcrlmin_help",
+            arguments = {"--npc|#", "<npc>", "#"},
+            permission = "npcpolice.settings.npc.lookmin",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 1
+    )
+    public boolean npcConfig_NPCLookMax(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (inargs.length == 1) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Max(0);
+        } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
+            policeRef.getJailManager.getWorldSettings(serverWorld).setRandomLook_Max(Integer.parseInt(inargs[1]));
+        } else {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
+            return true;
+        }
 
         policeRef.getCommandManager.registeredCommands.get("world").invokeCommand(policeRef, sender, npc, inargs, playerRecord, serverWorld, selectedWorld, selectedJail);
         return true;
