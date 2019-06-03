@@ -284,7 +284,7 @@ public class DamageListener implements Listener {
                 if (event.getDamage() >= ((LivingEntity) damaged).getHealth() && (regionFlags.monitorMurder == STATE_SETTING.TRUE || regionFlags.monitorMurder == STATE_SETTING.NOTSET)) {
                     // Add npc to list of murder for this player
                     Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_MURDER, world, npcTrait);
-                    Wanted_Information wantedInf = new Wanted_Information(plrRecord.getPlayer().getServer().getServerName(), witnessNPC, npc, null, WANTED_REASONS.MURDER, newBounty, new Date());
+                    Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, npc, null, WANTED_REASONS.MURDER, newBounty, new Date());
                     plrRecord.addNewWanted(wantedInf);
                     plrRecord.setNewStatus(CURRENT_STATUS.WANTED, WANTED_REASONS.MURDER);
                     plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_MURDER, newBounty);
@@ -315,7 +315,7 @@ public class DamageListener implements Listener {
 
                 } else if (regionFlags.monitorAssaults == STATE_SETTING.TRUE || regionFlags.monitorAssaults == STATE_SETTING.NOTSET || regionFlags.regionGuard) {
                     Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_DAMAGE, world) * event.getDamage();
-                    Wanted_Information wantedInf = new Wanted_Information(plrRecord.getPlayer().getServer().getServerName(), witnessNPC, npc, null, WANTED_REASONS.ASSAULT, newBounty, new Date());
+                    Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, npc, null, WANTED_REASONS.ASSAULT, newBounty, new Date());
                     plrRecord.addNewWanted(wantedInf);
                     plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_DAMAGE, newBounty);
 
@@ -414,7 +414,7 @@ public class DamageListener implements Listener {
 
             if (event.getDamage() >= ((LivingEntity) damaged).getHealth() && (regionFlags.monitorMurder == STATE_SETTING.TRUE || regionFlags.monitorMurder == STATE_SETTING.NOTSET)) {
                 Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_MURDER, currentWorld);
-                Wanted_Information wantedInf = new Wanted_Information(plrRecord.getPlayer().getServer().getServerName(), witnessNPC, null, targetPlayer, WANTED_REASONS.MURDER, newBounty, new Date());
+                Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, null, targetPlayer, WANTED_REASONS.MURDER, newBounty, new Date());
                 plrRecord.addNewWanted(wantedInf);
                 plrRecord.setNewStatus(CURRENT_STATUS.WANTED, WANTED_REASONS.MURDER);
                 plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_MURDER, newBounty);
@@ -430,7 +430,7 @@ public class DamageListener implements Listener {
                 return;
             } else if (regionFlags.monitorAssaults == STATE_SETTING.TRUE || regionFlags.monitorAssaults == STATE_SETTING.NOTSET) {
                 Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_PVP, currentWorld) * event.getDamage();
-                Wanted_Information wantedInf = new Wanted_Information(plrRecord.getPlayer().getServer().getServerName(), witnessNPC, null, targetPlayer, WANTED_REASONS.ASSAULT, newBounty, new Date());
+                Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, null, targetPlayer, WANTED_REASONS.ASSAULT, newBounty, new Date());
                 plrRecord.addNewWanted(wantedInf);
                 plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_DAMAGE, newBounty);
 

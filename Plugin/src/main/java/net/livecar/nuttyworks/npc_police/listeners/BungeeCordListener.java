@@ -47,6 +47,17 @@ public class BungeeCordListener implements PluginMessageListener {
                 fnlPlayer.sendPluginMessage(getStorageReference.pluginInstance, "BungeeCord", out.toByteArray());
             }
         }, 500);
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF("GetServer");
+
+                fnlPlayer.sendPluginMessage(getStorageReference.pluginInstance, "BungeeCord", out.toByteArray());
+            }
+        }, 500);
+
     }
 
     @Override
@@ -57,13 +68,18 @@ public class BungeeCordListener implements PluginMessageListener {
 
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
         String subchannel = in.readUTF();
-        if (!subchannel.equalsIgnoreCase("GetServers"))
-            return;
 
-        String serverList = in.readUTF();
-        if (!serverList.isEmpty()) {
-            this.serverList = serverList.trim().split("\\s*,\\s*");
+        if (subchannel.equalsIgnoreCase("GetServers")) {
+            String serverList = in.readUTF();
+            if (!serverList.isEmpty()) {
+                this.serverList = serverList.trim().split("\\s*,\\s*");
+            }
         }
+
+        if (subchannel.equalsIgnoreCase("GetServer")) {
+            getStorageReference.serverName = in.readUTF();
+        }
+
     }
 
     public List<String> getServerList() {

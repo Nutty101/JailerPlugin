@@ -42,6 +42,7 @@ public class NPC_Police {
     public Level debugLogLevel = Level.OFF;
     public int Version = 10000;
     public boolean disableDamageMonitoring = false;
+    public String serverName = "Standalone";
 
     // Storage locations
     public File storagePath;
