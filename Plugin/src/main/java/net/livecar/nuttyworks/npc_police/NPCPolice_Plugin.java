@@ -215,6 +215,7 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
         } else {
             policeStorage_Class.getMessageManager.consoleMessage("console_messages.placeholder_found", getServer().getPluginManager().getPlugin("PlaceholderAPI").getDescription().getVersion());
             policeStorage_Class.getPlaceHolderPlugin = new PlaceHolder_Plugin(policeStorage_Class);
+            policeStorage_Class.getPlaceHolderPlugin.register();
         }
 
         if (getServer().getPluginManager().getPlugin("LeaderHeads") == null) {
