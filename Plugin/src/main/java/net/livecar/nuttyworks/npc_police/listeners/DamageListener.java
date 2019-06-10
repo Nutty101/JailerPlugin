@@ -122,7 +122,7 @@ public class DamageListener implements Listener {
                     }
 
                     Jail_Setting jailRecord = null;
-                    jailRecord = plrRecord.sendPlayerToJail();
+                    jailRecord = plrRecord.sendPlayerToJail(WANTED_REASONS.BOUNTY);
 
                     if (jailRecord == null)
                         return;

@@ -321,14 +321,14 @@ public class Commands_UserCommands {
                 return true;
             }
 
-            playerRecord.sendPlayerToJail(bounty);
+            playerRecord.sendPlayerToJail(WANTED_REASONS.USERCOMMAND, bounty);
         } else {
             if (!playerRecord.isOnline()) {
                 policeRef.getMessageManager.sendMessage(sender, "general_messages.command_jailplayer_args", playerRecord);
                 return true;
             }
 
-            playerRecord.sendPlayerToJail(selectedJail.jailName, bounty);
+            playerRecord.sendPlayerToJail(WANTED_REASONS.USERCOMMAND, selectedJail.jailName, bounty);
         }
         return true;
     }
