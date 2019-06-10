@@ -135,8 +135,10 @@ public class Arrest_Record {
                 getStorageReference.getMessageManager.sendMessage(getPlayer(), "jail_messages.escaped_invlost", this);
             }
         }
-        Core_StatusChangedEvent statusEvent = new Core_StatusChangedEvent(getStorageReference, newStatus, reason, this);
+
+        StatusChangedEvent statusEvent = new Core_StatusChangedEvent(getStorageReference, newStatus, reason, this);
         try {Bukkit.getServer().getPluginManager().callEvent(statusEvent);} catch (Exception err) {}
+
     }
 
     public Jail_Setting getClosestJail() {
@@ -791,22 +793,22 @@ public class Arrest_Record {
         return KICK_ACTION.NOACTION;
     }
 
-    public Jail_Setting sendPlayerToJail() {
+    public Jail_Setting sendPlayerToJail(WANTED_REASONS reason) {
         if (this.currentStatus != CURRENT_STATUS.JAILED)
             currentJailName = "";
 
-        return sendPlayerToJail(currentJailName, 0);
+        return sendPlayerToJail(reason, currentJailName, 0);
     }
 
-    public Jail_Setting sendPlayerToJail(Integer length) {
-        return sendPlayerToJail(currentJailName, length);
+    public Jail_Setting sendPlayerToJail(WANTED_REASONS reason, Integer length) {
+        return sendPlayerToJail(reason, currentJailName, length);
     }
 
-    public Jail_Setting sendPlayerToJail(String jailName) {
-        return sendPlayerToJail(jailName, 0);
+    public Jail_Setting sendPlayerToJail(WANTED_REASONS reason, String jailName) {
+        return sendPlayerToJail(reason, jailName, 0);
     }
 
-    public Jail_Setting sendPlayerToJail(String jailName, Integer length) {
+    public Jail_Setting sendPlayerToJail(WANTED_REASONS reason, String jailName, Integer length) {
         if (!isOnline())
             return null;
 
@@ -827,6 +829,9 @@ public class Arrest_Record {
         clearWanted();
         this.priorStatus = this.currentStatus;
         this.currentStatus = CURRENT_STATUS.JAILED;
+
+        Core_StatusChangedEvent statusEvent = new Core_StatusChangedEvent(getStorageReference, CURRENT_STATUS.JAILED, reason, this);
+        try {Bukkit.getServer().getPluginManager().callEvent(statusEvent);} catch (Exception err) {}
 
         if (length > 0) {
             Double bountyAdd = this.getBountyPerSecond();

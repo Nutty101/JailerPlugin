@@ -27,7 +27,6 @@ public class MCUtils_1_14_R1 extends MCUtilsBridge {
 
     @Override
     public void PlayOutParticle(Location partLocation, Player player) {
-
         player.spawnParticle(particleType, partLocation.clone().add(0, 1, 0), 1);
     }
 

@@ -14,23 +14,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 
 public class PlayerDataManager {
 
-    public ScheduledExecutorService playerMonitorTask;
-    public ScheduledExecutorService playerDataMonitorTask;
+    public BukkitTask playerMonitorTask;
+    public BukkitTask playerDataMonitorTask;
     public HashMap<UUID, Pending_Command> pendingCommands = null;
+
     private NPC_Police getStorageReference = null;
     private ConcurrentHashMap<UUID, Arrest_Record> playerData = new ConcurrentHashMap<UUID, Arrest_Record>();
 
@@ -41,8 +42,7 @@ public class PlayerDataManager {
 
     public void MonitorPlayers() {
         if (playerMonitorTask == null) {
-            playerMonitorTask = Executors.newSingleThreadScheduledExecutor();
-            Runnable task = new Runnable() {
+            playerMonitorTask = new BukkitRunnable() {
                 @Override
                 public void run() {
                     try {
@@ -50,10 +50,9 @@ public class PlayerDataManager {
                     } catch (Exception err)
                     {}
                 }
-            };
-            playerMonitorTask.scheduleAtFixedRate(task, 5000, 250, TimeUnit.MILLISECONDS);
+            }.runTaskTimer(getStorageReference.pluginInstance,20,5);
         } else {
-            playerMonitorTask.shutdown();
+            playerMonitorTask.cancel();
         }
     }
 
@@ -142,16 +141,17 @@ public class PlayerDataManager {
 
     public void SaveMonitor() {
         if (playerDataMonitorTask == null) {
-            playerDataMonitorTask = Executors.newSingleThreadScheduledExecutor();
-            Runnable task = new Runnable() {
+            playerDataMonitorTask = new BukkitRunnable() {
                 @Override
                 public void run() {
-                    SavePlayers();
+                    try {
+                        MonitorTask();
+                    } catch (Exception err) {
+                    }
                 }
-            };
-            playerDataMonitorTask.scheduleAtFixedRate(task, 120, 15, TimeUnit.SECONDS);
+            }.runTaskTimer(getStorageReference.pluginInstance, 120, 20*5);
         } else {
-            playerDataMonitorTask.shutdown();
+            playerDataMonitorTask.cancel();
             SavePlayers();
         }
     }
@@ -375,7 +375,7 @@ public class PlayerDataManager {
                             }
 
                             if (!bIsInJail && plrRecord.getLastCheck() == null) {
-                                if (plrRecord.sendPlayerToJail() != null)
+                                if (plrRecord.sendPlayerToJail(WANTED_REASONS.BOUNTY) != null)
                                     bIsInJail = true;
                             }
 
