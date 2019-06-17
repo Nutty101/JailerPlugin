@@ -97,18 +97,6 @@ public class NPC_Police {
         // Get languages
         getLanguageManager.loadLanguages();
 
-        // Init Default settings
-        if (this.getDefaultConfig.contains("language"))
-            this.currentLanguage = this.getDefaultConfig.getString("language");
-        if (this.currentLanguage.equalsIgnoreCase("en-def"))
-            this.currentLanguage = "en_def";
-
-        if (this.getDefaultConfig.contains("debug")) {
-            if ("OFF SEVERE WARNING INFO CONFIG FINE FINER FINEST ALL".contains(this.getDefaultConfig.getString("debug").toUpperCase())) {
-                this.debugLogLevel = Level.parse(this.getDefaultConfig.getString("debug").toUpperCase());
-            }
-        }
-
         //Mark the version
         if (pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_8_R3")) {
             Version = 10808;
@@ -222,6 +210,19 @@ public class NPC_Police {
         exportConfig(languagePath, "en_def-npcpolice.yml");
 
         this.getDefaultConfig = getUtilities.loadConfiguration(new File(pluginInstance.getDataFolder(), "config.yml"));
+
+        // Init Default settings
+        if (this.getDefaultConfig.contains("language"))
+            this.currentLanguage = this.getDefaultConfig.getString("language");
+        if (this.currentLanguage.equalsIgnoreCase("en-def"))
+            this.currentLanguage = "en_def";
+
+        if (this.getDefaultConfig.contains("debug")) {
+            if ("OFF SEVERE WARNING INFO CONFIG FINE FINER FINEST ALL".contains(this.getDefaultConfig.getString("debug").toUpperCase())) {
+                this.debugLogLevel = Level.parse(this.getDefaultConfig.getString("debug").toUpperCase());
+            }
+        }
+
     }
 
     private void exportConfig(File path, String filename) {
