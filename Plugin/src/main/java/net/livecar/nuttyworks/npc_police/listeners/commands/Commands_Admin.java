@@ -6,6 +6,8 @@ import net.livecar.nuttyworks.npc_police.annotations.CommandInfo;
 import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.jails.World_Setting;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

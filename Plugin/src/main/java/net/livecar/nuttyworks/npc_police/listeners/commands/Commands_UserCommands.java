@@ -367,4 +367,29 @@ public class Commands_UserCommands {
 
         return true;
     }
+
+    @CommandInfo(
+            name = "losdebug",
+            group = "Player Commands",
+            badArgumentsMessage = "command_losdebug_args",
+            helpMessage = "command_losdebug_help",
+            arguments = {"--player", "<PLAYERNAME>"},
+            permission = "npcpolice.admin.losdebug",
+            allowConsole = true,
+            minArguments = 0,
+            maxArguments = 0
+    )
+    public boolean jailConfig_losDebug(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (playerRecord == null && (sender instanceof Player)) {
+            playerRecord = policeRef.getPlayerManager.getPlayer(((Player) sender).getUniqueId());
+        }
+
+        if (!playerRecord.isOnline()) {
+            return true;
+        }
+        playerRecord.enableDebug = !playerRecord.enableDebug;
+        policeRef.getMessageManager.sendMessage(sender, "general_messages.config_losdebug", playerRecord);
+        return true;
+    }
+
 }

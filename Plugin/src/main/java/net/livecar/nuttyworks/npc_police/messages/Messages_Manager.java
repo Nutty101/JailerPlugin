@@ -257,24 +257,24 @@ public class Messages_Manager {
                 message = message.replaceAll("<trait\\.wantedsetting>", this.getResultMessage("result_Messages.wantedlevel_" + npcTrait.wantedSetting.toString())[0]);
 
             if (message.toLowerCase().contains("<trait.bounty.damageicon>"))
-                message = message.replaceAll("<trait\\.bounty\\.damageicon>", npcTrait.bounty_assault < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+                message = message.replaceAll("<trait\\.bounty\\.damageicon>", npcTrait.bountyAssault < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
             if (message.toLowerCase().contains("<trait.bounty.murdericon>"))
-                message = message.replaceAll("<trait\\.bounty\\.murdericon>", npcTrait.bounty_murder < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+                message = message.replaceAll("<trait\\.bounty\\.murdericon>", npcTrait.bountyMurder < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
 
             if (message.toLowerCase().contains("<trait.time.damageicon>"))
-                message = message.replaceAll("<trait\\.time\\.damageicon>", npcTrait.time_assault < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+                message = message.replaceAll("<trait\\.time\\.damageicon>", npcTrait.timeAssault < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
             if (message.toLowerCase().contains("<trait.time.murdericon>"))
-                message = message.replaceAll("<trait\\.time\\.murdericon>", npcTrait.time_murder < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
+                message = message.replaceAll("<trait\\.time\\.murdericon>", npcTrait.timeMurder < 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);
 
             if (message.toLowerCase().contains("<trait.bounty.damage>"))
-                message = message.replaceAll("<trait\\.bounty\\.damage>", String.valueOf(npcTrait.bounty_assault));
+                message = message.replaceAll("<trait\\.bounty\\.damage>", String.valueOf(npcTrait.bountyAssault));
             if (message.toLowerCase().contains("<trait.bounty.murder>"))
-                message = message.replaceAll("<trait\\.bounty\\.murder>", String.valueOf(npcTrait.bounty_murder));
+                message = message.replaceAll("<trait\\.bounty\\.murder>", String.valueOf(npcTrait.bountyMurder));
 
             if (message.toLowerCase().contains("<trait.time.damage>"))
-                message = message.replaceAll("<trait\\.time\\.damage>", String.valueOf(npcTrait.time_assault));
+                message = message.replaceAll("<trait\\.time\\.damage>", String.valueOf(npcTrait.timeAssault));
             if (message.toLowerCase().contains("<trait.time.murder>"))
-                message = message.replaceAll("<trait\\.time\\.murder>", String.valueOf(npcTrait.time_murder));
+                message = message.replaceAll("<trait\\.time\\.murder>", String.valueOf(npcTrait.timeMurder));
 
             if (message.toLowerCase().contains("<trait.look.degreesicon>"))
                 message = message.replaceAll("<trait\\.look\\.degreesicon>", npcTrait.idleRandomLookDegrees == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);

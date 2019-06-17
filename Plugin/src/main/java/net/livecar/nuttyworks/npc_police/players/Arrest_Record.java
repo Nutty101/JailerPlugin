@@ -1,26 +1,35 @@
 package net.livecar.nuttyworks.npc_police.players;
 
+import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.*;
 import net.livecar.nuttyworks.npc_police.api.Wanted_Information;
 import net.livecar.nuttyworks.npc_police.api.events.*;
+import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
+import net.livecar.nuttyworks.npc_police.gui_interface.JailerGUI_LockedInventory;
 import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.jails.World_Setting;
+import net.livecar.nuttyworks.npc_police.listeners.commands.Pending_Command;
 import net.livecar.nuttyworks.npc_police.worldguard.RegionSettings;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class Arrest_Record {
+public class Arrest_Record implements Listener {
     public String lastAttack = "";
     public String currentJailName = "";
     public Jail_Setting currentJail = null;
     public Location lastJailCell = null;
 
     public Date lastNotification = new Date(0);
+    public boolean enableDebug = false;
 
     private UUID playerUUID = null;
 
@@ -42,9 +51,13 @@ public class Arrest_Record {
     private Date lastEscape = new Date(0);
     private NPC_Police getStorageReference;
 
-    private Date lastSpotted = new Date(0);
-
+    private Date lastSpottedTime = new Date(0);
+    private NPC lastSpottedBy = null;
     private ItemStack[] lockedInventory = null;
+
+    private Double lastMovementSpeed = 0.0;
+    private Location lastMovementFrom ;
+    private Location lastMovementTo;
 
     public Arrest_Record(NPC_Police policeRef, UUID playerID, Double totalBounty, HashMap<String, Integer> statistics, CURRENT_STATUS currentStatus, CURRENT_STATUS priorStatus) {
         this.getStorageReference = policeRef;
@@ -177,18 +190,36 @@ public class Arrest_Record {
         return null;
     }
 
+    public void setSpotted(NPC npc) {
+        if (this.lastSpottedTime.getTime() < new Date().getTime()) {
+            this.lastSpottedTime = new Date(new Date().getTime() + 500);
+            this.lastSpottedBy = npc;
+        }
+    }
+
+    public NPC getLastSpottedBy()
+    {
+        return this.lastSpottedBy;
+    }
+
     public void setSpottedTime()
     {
-        if (this.lastSpotted.getTime() < new Date().getTime())
-            this.lastSpotted = new Date(new Date().getTime()+500);
+        if (this.lastSpottedTime.getTime() < new Date().getTime())
+            this.lastSpottedTime = new Date(new Date().getTime()+500);
     }
 
     public boolean isSpottedInCooldown()
     {
-        if (this.lastSpotted.getTime() < new Date().getTime())
+        if (this.lastSpottedTime.getTime() < new Date().getTime())
             return false;
         return true;
     }
+
+    public Date getLastSpottedTime()
+    {
+        return this.lastSpottedTime;
+    }
+
 
     public STATE_SETTING hasCoolDown(String regionName) {
         if (!isOnline())
@@ -1092,5 +1123,45 @@ public class Arrest_Record {
             try {Bukkit.getServer().getPluginManager().callEvent(wantedLevelEvent);} catch (Exception err) {}
         }
     }
+
+    public void setMovementSpeed(Location from, Location to)
+    {
+        this.lastMovementSpeed = from.distanceSquared(to);
+        this.lastMovementFrom = from;
+        this.lastMovementTo = to;
+    }
+
+    public Double getLastMovementSpeed()
+    {
+        return this.lastMovementSpeed;
+    }
+
+    public void registerEvents()
+    {
+        Bukkit.getPluginManager().registerEvents(this, getStorageReference.pluginInstance);
+    }
+
+    public void unRegisterEvents()
+    {
+        try {
+            PlayerMoveEvent.getHandlerList().unregister(this);
+        } catch (Exception err)
+        {}
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        if (!getStorageReference.pluginInstance.isEnabled())
+            return;
+
+        if (!e.getPlayer().getUniqueId().equals(this.playerUUID))
+            return;
+
+        this.lastMovementSpeed = e.getFrom().distanceSquared(e.getTo());
+        this.lastMovementFrom = e.getFrom();
+        this.lastMovementTo = e.getTo();
+
+    }
+
 
 }

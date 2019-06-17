@@ -2,10 +2,10 @@ package net.livecar.nuttyworks.npc_police;
 
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.event.CitizensDisableEvent;
+import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
 import net.livecar.nuttyworks.npc_police.listeners.BungeeCordListener;
 import net.livecar.nuttyworks.npc_police.listeners.DamageListener;
-import net.livecar.nuttyworks.npc_police.listeners.PlayerListener;
 import net.livecar.nuttyworks.npc_police.metrics.BStat_Metrics;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.betonquest.betonquest_1_9.BetonQuest_Plugin_V1_9;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.leaderheads.LeaderHeads_Plugin;
@@ -22,6 +22,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.ArrayList;
@@ -239,7 +240,6 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
 
         // Register events
         Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(policeStorage_Class), this);
 
         policeStorage_Class.getCustomDamageListenerClass = new DamageListener(policeStorage_Class);
         Bukkit.getPluginManager().registerEvents(policeStorage_Class.getCustomDamageListenerClass, this);
@@ -290,5 +290,25 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
     public void onPluginMessageReceived(String arg0, Player arg1, byte[] arg2) {
         // TODO Auto-generated method stub
 
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        //Validate if we have checked bungeecord yet or not.
+        if (policeStorage_Class.getBungeeListener.bungeeCordEnabled == Enumerations.STATE_SETTING.NOTSET) {
+            policeStorage_Class.getBungeeListener.startBungeeChecks(event.getPlayer());
+        }
+
+        policeStorage_Class.getDatabaseManager.queueLoadPlayerRequest(event.getPlayer().getUniqueId());
+        if (policeStorage_Class.getSentinelPlugin != null && event.getPlayer().isOp()) {
+
+            if (policeStorage_Class.getSentinelPlugin.alertOpToIssues(event.getPlayer())) {
+                final Player plr = event.getPlayer();
+                Bukkit.getServer().getScheduler().runTaskLater(
+                        policeStorage_Class.pluginInstance, () -> policeStorage_Class.getMessageManager.sendMessage(plr, "general_messages.sentinel_issue"), 10
+                );
+
+            }
+        }
     }
 }

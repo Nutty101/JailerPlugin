@@ -1,5 +1,6 @@
 package net.livecar.nuttyworks.npc_police.api.managers;
 
+import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.CURRENT_STATUS;
 import net.livecar.nuttyworks.npc_police.api.Wanted_Information;
@@ -236,4 +237,24 @@ public abstract class PlayerManager {
      * @since 2.2.1
      */
     abstract public void setWantedLevelForced(Enumerations.WANTED_SETTING wantedLevel, Enumerations.JAILED_BOUNTY reason, boolean report);
+
+
+    /**
+     * This method provides access to the NPC that last spotted the user<br>
+     *
+     * @return <code>NPC</code> returns a citizens NPC object
+     * for the NPC that spotted the user<br>
+     * @since 2.2.122
+     */
+    abstract public NPC getLastSpottedBy();
+
+    /**
+     * This method provides access to last time the NPC was spotted by an NPC <br>
+     *
+     * @return <code>Date</code> returns a java date <br>
+     * @since 2.2.122
+     */
+    abstract public Date getLastSpottedTime();
+
+
 }

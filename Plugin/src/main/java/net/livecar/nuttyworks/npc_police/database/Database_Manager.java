@@ -117,6 +117,7 @@ public class Database_Manager {
 
     public void queueRemovePlayerRequest(final Arrest_Record plrRecord) {
         getStorageReference.getMessageManager.debugMessage(Level.FINE, processingRequests.size() + "|" +plrRecord.getPlayerUUID().toString());
+        plrRecord.unRegisterEvents();
         addProcessingRequestToQueue(new Database_QueuedRequest(RequestType.REMOVE_USER, plrRecord));
     }
 
@@ -192,6 +193,7 @@ public class Database_Manager {
                         if (!plrRecord.currentJailName.trim().equals(""))
                             plrRecord.currentJail = getStorageReference.getJailManager.getJailByName(plrRecord.currentJailName);
                         getStorageReference.getPlayerManager.addPlayerRecord(plrRecord);
+                        plrRecord.registerEvents();
 
                         plrRecord.playerKickCheck(plrRecord.getPlayer().getWorld(), true);
                     }

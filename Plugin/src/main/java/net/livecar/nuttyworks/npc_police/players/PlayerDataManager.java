@@ -4,6 +4,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.*;
 import net.livecar.nuttyworks.npc_police.api.events.Core_PlayerSpottedEvent;
+import net.livecar.nuttyworks.npc_police.bridges.LineOfSight;
 import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
 import net.livecar.nuttyworks.npc_police.jails.DistanceDelaySetting;
 import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
@@ -14,7 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -24,20 +24,20 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.*;
-import java.util.logging.Level;
 
 public class PlayerDataManager {
 
     public BukkitTask playerMonitorTask;
     public BukkitTask playerDataMonitorTask;
-    public HashMap<UUID, Pending_Command> pendingCommands = null;
+    public HashMap<UUID, Pending_Command> pendingCommands;
 
-    private NPC_Police getStorageReference = null;
-    private ConcurrentHashMap<UUID, Arrest_Record> playerData = new ConcurrentHashMap<UUID, Arrest_Record>();
+    private NPC_Police getStorageReference;
+    private ConcurrentHashMap<UUID, Arrest_Record> playerData;
 
     public PlayerDataManager(NPC_Police policeRef) {
         getStorageReference = policeRef;
-        pendingCommands = new HashMap<UUID, Pending_Command>();
+        pendingCommands = new HashMap<>();
+        playerData = new ConcurrentHashMap<>();
     }
 
     public void MonitorPlayers() {
@@ -204,7 +204,54 @@ public class PlayerDataManager {
                                         getStorageReference.getSentinelPlugin.clearTarget(oTmpNPC, plrRecord.getPlayer());
 
                                 if (trait.isGuard) {
-                                    boolean hasSight = getStorageReference.getUtilities.hasLineOfSight((LivingEntity) oTmpNPC.getEntity(), plrRecord.getPlayer());
+                                    //validate that we need to perform a line of sight lookup
+
+                                    int maxMeasureDist = (int)(oTmpNPC.getEntity().getLocation().distanceSquared(plrRecord.getPlayer().getLocation())+20);
+
+                                    if (!plrRecord.isOnline())
+                                        continue;
+                                    if (plrRecord.getPlayer().isOnline() && oTmpNPC.getEntity().getLocation().distanceSquared(plrRecord.getPlayer().getLocation()) > 2304)
+                                        continue;
+
+                                    if (getStorageReference.getJailManager.getLOSSetting(plrRecord.getPlayer().getWorld(),trait) != STATE_SETTING.TRUE)
+                                        continue;
+
+                                    LineOfSight losResults = getStorageReference.getVersionBridge.hasLineOfSight((LivingEntity) oTmpNPC.getEntity(),plrRecord.getPlayer(),maxMeasureDist,plrRecord.enableDebug?plrRecord.getPlayer():null);
+                                    boolean hasSight = true;
+
+                                    if (losResults.direction > 0)
+                                        hasSight = false;
+                                    else if (losResults.visability <= 0.0)
+                                        hasSight = false;
+                                    else
+                                    {
+                                        Double randomNumber = Math.floor(Math.random() * Math.floor(100));
+
+                                        if (losResults.direction < -0.60)
+                                        {
+                                            //Guards focus area.
+                                            hasSight = true;
+                                        }
+                                        else if ((losResults.direction > -0.40 && losResults.direction < -0.30) && plrRecord.getPlayer().isSneaking() && plrRecord.getLastMovementSpeed() < 0.01)
+                                        {
+                                            if (randomNumber < 20)
+                                                hasSight = false;
+                                        }
+                                        else if ((losResults.direction > -0.30 && losResults.direction < -0.15) && plrRecord.getLastMovementSpeed() < 0.004)
+                                        {
+                                            if (randomNumber < 40)
+                                                hasSight = false;
+                                        }
+                                        else if ((losResults.direction > -0.30 && losResults.direction < -0.15) && plrRecord.getPlayer().isSneaking() && plrRecord.getLastMovementSpeed() < 0.01)
+                                        {
+                                            if (randomNumber < 60)
+                                                hasSight = false;
+                                        }
+                                        else if ((losResults.direction > -0.15) && plrRecord.getPlayer().isSneaking())
+                                        {
+                                                hasSight = false;
+                                        }
+                                    }
 
                                     if (hasSight) {
                                         if (getStorageReference.getJailManager.getLOSSetting(plrRecord.getPlayer().getLocation().getWorld(), trait) == STATE_SETTING.TRUE && plrRecord.getCurrentStatus() != CURRENT_STATUS.FREE && plrRecord.getCurrentStatus() != CURRENT_STATUS.ARRESTED && plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED)
@@ -214,9 +261,9 @@ public class PlayerDataManager {
                                         if (guardWithSight == null) {
                                             if (!plrRecord.isSpottedInCooldown()) {
                                                 guardWithSight = oTmpNPC;
+                                                plrRecord.setSpotted(oTmpNPC);
                                                     Core_PlayerSpottedEvent spottedEvent = new Core_PlayerSpottedEvent(getStorageReference, oTmpNPC, plrRecord);
                                                     try {Bukkit.getServer().getPluginManager().callEvent(spottedEvent);} catch (Exception err) {}
-                                                plrRecord.setSpottedTime();
                                             }
                                         }
                                     }
@@ -241,37 +288,39 @@ public class PlayerDataManager {
                     }
                 }
 
-                if (regionFlags.autoFlag_RequiresSight == STATE_SETTING.TRUE && guardWithSight != null) {
-                    if (regionFlags.autoFlag_Bounty != null) {
-                        if (regionFlags.autoFlag_CoolDown != null) {
-                            if (plrRecord.hasCoolDown(regionFlags.regionName) == STATE_SETTING.FALSE) {
-                                // Apply more bounty
+                if (regionFlags.autoFlag_RequiresSight == STATE_SETTING.TRUE) {
+                    if (guardWithSight != null) {
+                        if (regionFlags.autoFlag_Bounty != null) {
+                            if (regionFlags.autoFlag_CoolDown != null) {
+                                if (plrRecord.hasCoolDown(regionFlags.regionName) == STATE_SETTING.FALSE) {
+                                    // Apply more bounty
+                                    plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
+                                }
+                            } else {
                                 plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
                             }
-                        } else {
-                            plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
                         }
-                    }
 
-                    if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.WANTED) {
-                        plrRecord.clearGroups();
-                        if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()).isEmpty())
-                            getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
-                    }
-                    if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.ESCAPED) {
-                        plrRecord.clearGroups();
-                        if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()).isEmpty())
-                            getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
-                    }
-                    if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.JAILED) {
-                        plrRecord.clearGroups();
-                        if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()).isEmpty())
-                            getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
-                    }
+                        if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.WANTED) {
+                            plrRecord.clearGroups();
+                            if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()).isEmpty())
+                                getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
+                        }
+                        if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.ESCAPED) {
+                            plrRecord.clearGroups();
+                            if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()).isEmpty())
+                                getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
+                        }
+                        if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.JAILED) {
+                            plrRecord.clearGroups();
+                            if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()).isEmpty())
+                                getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
+                        }
 
-                    if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
-                        plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
-                        break;
+                        if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
+                            plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
+                            break;
+                        }
                     }
                 } else if (regionFlags.autoFlag_Bounty != null) {
                     if (regionFlags.autoFlag_CoolDown != null) {
@@ -387,66 +436,72 @@ public class PlayerDataManager {
                                 //Set the player to a wanted status.
 
                             }
+
                             if (!bIsInJail) {
                                 // They escaped! Remove from the list and let them know
                                 // they have a warrant now.
-                                for (Player onlinePlayer : getStorageReference.pluginInstance.getServer().getOnlinePlayers()) {
+                                if ((getStorageReference.getJailManager.getEscapeLastSeen(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) > 0) && (plrRecord.getLastSpottedTime().getTime() < ((new Date()).getTime() - (getStorageReference.getJailManager.getEscapeLastSeen(plrRecord.getPlayer().getWorld(), plrRecord.currentJail)*1000))))
+                                {
+                                    //Don't set them as escaped
+                                } else {
 
-                                    if (onlinePlayer.getUniqueId().equals(plrRecord.getPlayerUUID())) {
-                                        // Let the player know they escaped...
-                                        if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
-                                            getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice_wanted", plrRecord);
-                                        } else {
-                                            getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice", plrRecord);
-                                        }
-                                    } else {
-                                        if (!plrRecord.getPlayer().getWorld().equals(onlinePlayer.getWorld()))
-                                            continue;
+                                    for (Player onlinePlayer : getStorageReference.pluginInstance.getServer().getOnlinePlayers()) {
 
-                                        DistanceDelaySetting distSetting = getStorageReference.getJailManager.getNoticeSetting(NOTICE_SETTING.ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
-                                        if (onlinePlayer.getLocation().distanceSquared(plrRecord.getPlayer().getLocation()) < distSetting.getDistanceSquared()) {
-                                            if (distSetting.getDelay() < 0.001D) {
-                                                // send it now
-                                                getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_broadcast", plrRecord);
+                                        if (onlinePlayer.getUniqueId().equals(plrRecord.getPlayerUUID())) {
+                                            // Let the player know they escaped...
+                                            if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
+                                                getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice_wanted", plrRecord);
                                             } else {
-                                                // Delayed sending of this message
-                                                final Player targetPlayer = onlinePlayer.getPlayer();
-                                                final Arrest_Record playerRecord = plrRecord;
+                                                getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_notice", plrRecord);
+                                            }
+                                        } else {
+                                            if (!plrRecord.getPlayer().getWorld().equals(onlinePlayer.getWorld()))
+                                                continue;
 
-                                                getStorageReference.pluginInstance.getServer().getScheduler().scheduleSyncDelayedTask(
-                                                        getStorageReference.pluginInstance, new Runnable() {
-                                                            public void run() {
-                                                                getStorageReference.getMessageManager.sendMessage(targetPlayer, "jail_messages.escaped_broadcast", playerRecord);
-                                                            }
-                                                        }, (long) (distSetting.getDelay() * 20L)
-                                                );
+                                            DistanceDelaySetting distSetting = getStorageReference.getJailManager.getNoticeSetting(NOTICE_SETTING.ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
+                                            if (onlinePlayer.getLocation().distanceSquared(plrRecord.getPlayer().getLocation()) < distSetting.getDistanceSquared()) {
+                                                if (distSetting.getDelay() < 0.001D) {
+                                                    // send it now
+                                                    getStorageReference.getMessageManager.sendMessage(onlinePlayer, "jail_messages.escaped_broadcast", plrRecord);
+                                                } else {
+                                                    // Delayed sending of this message
+                                                    final Player targetPlayer = onlinePlayer.getPlayer();
+                                                    final Arrest_Record playerRecord = plrRecord;
+
+                                                    getStorageReference.pluginInstance.getServer().getScheduler().scheduleSyncDelayedTask(
+                                                            getStorageReference.pluginInstance, new Runnable() {
+                                                                public void run() {
+                                                                    getStorageReference.getMessageManager.sendMessage(targetPlayer, "jail_messages.escaped_broadcast", playerRecord);
+                                                                }
+                                                            }, (long) (distSetting.getDelay() * 20L)
+                                                    );
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
-                                    plrRecord.setNewStatus(CURRENT_STATUS.WANTED, WANTED_REASONS.ESCAPE);
-                                } else {
-                                    Double addedBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
-                                    plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_ESCAPED, addedBounty);
-                                    plrRecord.setNewStatus(CURRENT_STATUS.ESCAPED, WANTED_REASONS.ESCAPE);
-                                }
-                                try {
-                                    for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.PLAYER_ESCAPED, plrRecord.getPlayer().getWorld(), plrRecord.currentJail)) {
-                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), sMsg, null, plrRecord, null, null, getStorageReference.getJailManager.getWorldSettings(plrRecord.getPlayer().getWorld().getName()), null, null, 0));
+                                    if (getStorageReference.getJailManager.getEscapeSetting(plrRecord.getPlayer().getWorld(), plrRecord.currentJail) == ESCAPE_SETTING.DISABLED) {
+                                        plrRecord.setNewStatus(CURRENT_STATUS.WANTED, WANTED_REASONS.ESCAPE);
+                                    } else {
+                                        Double addedBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_ESCAPED, plrRecord.getPlayer().getLocation().getWorld(), plrRecord.currentJail);
+                                        plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_ESCAPED, addedBounty);
+                                        plrRecord.setNewStatus(CURRENT_STATUS.ESCAPED, WANTED_REASONS.ESCAPE);
                                     }
-                                } catch (Exception err) {
+                                    try {
+                                        for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.PLAYER_ESCAPED, plrRecord.getPlayer().getWorld(), plrRecord.currentJail)) {
+                                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), sMsg, null, plrRecord, null, null, getStorageReference.getJailManager.getWorldSettings(plrRecord.getPlayer().getWorld().getName()), null, null, 0));
+                                        }
+                                    } catch (Exception err) {
 
+                                    }
+                                    plrRecord.clearWanted();
+                                    plrRecord.setLastEscape(new Date());
+                                    if (getStorageReference.getPermissionManager != null) {
+                                        getStorageReference.getPermissionManager.playerRemoveGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
+                                        getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
+                                        getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
+                                    }
                                 }
-                                plrRecord.clearWanted();
-                                plrRecord.setLastEscape(new Date());
-                                if (getStorageReference.getPermissionManager != null) {
-                                    getStorageReference.getPermissionManager.playerRemoveGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
-                                    getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.WANTED, plrRecord.getPlayer().getWorld()));
-                                    getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.ESCAPED, plrRecord.getPlayer().getWorld()));
-                                }
-
                             } else {
                                 // Check to see if the player has a locked time pending.
                                 if (!plrRecord.getJailedExpires().after(new Date())) {

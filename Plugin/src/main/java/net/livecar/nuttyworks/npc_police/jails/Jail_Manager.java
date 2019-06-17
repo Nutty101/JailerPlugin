@@ -315,12 +315,12 @@ public class Jail_Manager {
         if (npcTrait != null) {
             switch (type) {
                 case BOUNTY_DAMAGE:
-                    if (npcTrait.bounty_assault > -1)
-                        return npcTrait.bounty_assault;
+                    if (npcTrait.bountyAssault > -1)
+                        return npcTrait.bountyAssault;
                     break;
                 case BOUNTY_MURDER:
-                    if (npcTrait.bounty_murder > -1)
-                        return npcTrait.bounty_murder;
+                    if (npcTrait.bountyMurder > -1)
+                        return npcTrait.bountyMurder;
                     break;
                 default:
                     break;
@@ -534,6 +534,38 @@ public class Jail_Manager {
         }
 
         return getProcessedCommands(type, world);
+    }
+
+
+    public int getEscapeLastSeen(World world, Jail_Setting currentJail)
+    {
+        if (!world_Configurations.containsKey(world.getName())) {
+            return getEscapeLastSeen();
+        }
+        if (currentJail == null)
+            return getEscapeLastSeen(world);
+
+        return getEscapeLastSeen();
+    }
+
+    public int getEscapeLastSeen(World world)
+    {
+        if (world == null)
+            return getEscapeLastSeen();
+
+        if (!world_Configurations.containsKey(world.getName())) {
+            return getEscapeLastSeen();
+        }
+
+        if (world_Configurations.get(world.getName()).getEscapeLastSeen() != -1)
+            return world_Configurations.get(world.getName()).getEscapeLastSeen();
+
+        return getEscapeLastSeen();
+    }
+
+    public int getEscapeLastSeen()
+    {
+        return getStorageReference.getJailManager.getGlobalSettings().getEscapeLastSeen();
     }
 
     public ESCAPE_SETTING getEscapeSetting(World world, Jail_Setting currentJail)
@@ -770,6 +802,8 @@ public class Jail_Manager {
             setupWorld.setTimeInterval_Jailed(getStorageReference.getDefaultConfig.getDouble("global_settings.times.jailed_bounty", -20.0));
             setupWorld.setTimeInterval_Wanted(getStorageReference.getDefaultConfig.getDouble("global_settings.times.wanted_bounty", 0.0));
 
+            setupWorld.setTimeInterval_Wanted(getStorageReference.getDefaultConfig.getDouble("global_settings.escaped", 0.0));
+
             if (getStorageReference.getDefaultConfig.contains("global_settings.inventory.takeonarrest"))
                 setupWorld.onArrest_InventoryAction(getStorageReference.getDefaultConfig.getBoolean("global_settings.inventory.takeonarrest", false) ? STATE_SETTING.TRUE : STATE_SETTING.FALSE);
             if (getStorageReference.getDefaultConfig.contains("global_settings.inventory.returnonescape"))
@@ -855,6 +889,8 @@ public class Jail_Manager {
         //Escape Enabled Settings
         if (jail_Settings.contains(worldName + ".settings.escapesetting"))
             newWorld.setEscapeSetting(ESCAPE_SETTING.valueOf(jail_Settings.getString(worldName + ".settings.escapesetting")));
+        if (jail_Settings.contains(worldName + ".settings.lastseentime"))
+            newWorld.setEscapeLastSeen(jail_Settings.getInt(worldName + ".settings.lastseentime"));
 
         // Wanted Level settings
         if (jail_Settings.contains(worldName + ".wanted.min"))
@@ -875,6 +911,9 @@ public class Jail_Manager {
             newWorld.setTimeInterval_Wanted(jail_Settings.getDouble(worldName + ".times.wanted_bounty"));
         if (jail_Settings.contains(worldName + ".times.outofcell_day"))
             newWorld.setTimeInterval_CellDay(jail_Settings.getDouble(worldName + ".times.outofcell_day"));
+        if (jail_Settings.contains(worldName + ".times.outofcell_night"))
+            newWorld.setTimeInterval_CellNight(jail_Settings.getDouble(worldName + ".times.outofcell_night"));
+
         if (jail_Settings.contains(worldName + ".times.outofcell_night"))
             newWorld.setTimeInterval_CellNight(jail_Settings.getDouble(worldName + ".times.outofcell_night"));
 
@@ -971,9 +1010,11 @@ public class Jail_Manager {
                 if (jail_Settings.contains(worldName + ".jails." + jailID + ".player_notices.escaped.delay"))
                     newWorld.setEscaped_Delay(jail_Settings.getDouble(worldName + ".jails." + jailID + ".player_notices.escaped.delay"));
 
-                // Wanted Level settings
+                // Escape settings
                 if (jail_Settings.contains(worldName + ".jails." + jailID + ".settings.escapesetting"))
                     jailSetting.escapeSetting = net.livecar.nuttyworks.npc_police.api.Enumerations.ESCAPE_SETTING.valueOf(jail_Settings.getString(worldName + ".jails." + jailID + ".settings.escapesetting"));
+                if (jail_Settings.contains(worldName + ".jails." + jailID + ".settings.lastseentime"))
+                    jailSetting.escapeLastSeenInJail = jail_Settings.getInt(worldName + ".jails." + jailID + ".settings.lastseentime");
 
                 if (jail_Settings.contains(worldName + ".jails." + jailID + ".cell_locations")) {
                     for (String cellID : jail_Settings.getConfigurationSection(worldName + ".jails." + jailID + ".cell_locations").getKeys(false)) {
@@ -1068,6 +1109,8 @@ public class Jail_Manager {
             //Escape Enabled Settings
             if (worldConfig.getEscapeSetting() != ESCAPE_SETTING.NOTSET)
                 jail_Settings.set(worldConfig.getWorldName() + ".settings.escapesetting", worldConfig.getEscapeSetting().toString());
+            if (worldConfig.getEscapeLastSeen() > -1)
+                jail_Settings.set(worldConfig.getWorldName() + ".settings.lastseentime", worldConfig.getEscapeLastSeen());
 
             // Wanted Level settings
             if (worldConfig.getMinimum_WantedLevel() != WANTED_LEVEL.GLOBAL)
@@ -1159,6 +1202,8 @@ public class Jail_Manager {
                 //Escape Enabled Settings
                 if (jailSetting.escapeSetting != ESCAPE_SETTING.NOTSET)
                     jail_Settings.set(worldConfig.getWorldName() + ".jails." + jailSetting.jailName.toLowerCase() + ".settings.escapesetting", jailSetting.escapeSetting.toString());
+                if (jailSetting.escapeLastSeenInJail > -1)
+                    jail_Settings.set(worldConfig.getWorldName() + ".jails." + jailSetting.jailName.toLowerCase() + ".settings.lastseentime", jailSetting.escapeSetting.toString());
 
                 for (int locCounter = 0; locCounter < jailSetting.cellLocations.size(); locCounter++) {
                     jail_Settings.set(worldConfig.getWorldName() + ".jails." + jailSetting.jailName.toLowerCase() + ".cell_locations." + locCounter + ".world", jailSetting.cellLocations.get(locCounter).getWorld().getName());

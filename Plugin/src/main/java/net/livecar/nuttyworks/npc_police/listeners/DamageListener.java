@@ -12,7 +12,6 @@ import net.livecar.nuttyworks.npc_police.jails.Jail_Setting;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
 import net.livecar.nuttyworks.npc_police.worldguard.RegionSettings;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -290,8 +289,8 @@ public class DamageListener implements Listener {
                     plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_MURDER, newBounty);
 
                     if (npcTrait != null) {
-                        if (npcTrait.time_murder > -1)
-                            plrRecord.changeTime(npcTrait.time_murder);
+                        if (npcTrait.timeMurder > -1)
+                            plrRecord.changeTime(npcTrait.timeMurder);
                         if (npcTrait.wantedSetting != null && npcTrait.wantedSetting != WANTED_SETTING.NONE)
                             plrRecord.setWantedLevel(npcTrait.wantedSetting, JAILED_BOUNTY.BOUNTY_MURDER);
                         else if (regionFlags.wanted_NPC_Setting != null && regionFlags.wanted_NPC_Setting.ordinal() > plrRecord.getWantedLevel().ordinal())
@@ -319,8 +318,8 @@ public class DamageListener implements Listener {
                     plrRecord.addNewWanted(wantedInf);
                     plrRecord.changeBounty(JAILED_BOUNTY.BOUNTY_DAMAGE, newBounty);
 
-                    if (npcTrait != null && npcTrait.time_assault > -1)
-                        plrRecord.changeTime(npcTrait.time_assault);
+                    if (npcTrait != null && npcTrait.timeAssault > -1)
+                        plrRecord.changeTime(npcTrait.timeAssault);
 
                     if (plrRecord.getCurrentStatus() != CURRENT_STATUS.ARRESTED && plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED) {
                         if (getStorageReference.getJailManager.getMinBountyWanted(player.getWorld(), npcTrait) > plrRecord.getBounty())

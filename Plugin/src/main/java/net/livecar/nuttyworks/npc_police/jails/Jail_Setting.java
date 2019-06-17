@@ -39,6 +39,7 @@ public class Jail_Setting {
 
     // Escaped Enabled
     public Enumerations.ESCAPE_SETTING escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
+    public Integer escapeLastSeenInJail = -1;
 
     // Player Notices
     public int escaped_Distance = -1;

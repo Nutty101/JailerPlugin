@@ -3,13 +3,18 @@ package net.livecar.nuttyworks.npc_police.bridges;
 import net.minecraft.server.v1_11_R1.EnumParticle;
 import net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.Vector;
 
 public class MCUtils_1_11_R1 extends MCUtilsBridge {
 
@@ -130,6 +135,36 @@ public class MCUtils_1_11_R1 extends MCUtilsBridge {
         return Double.valueOf(100.0D);
     }
 
+    private Double getEntityMaxY(Entity entity)
+    {
+        return ((CraftEntity) entity).getHandle().getBoundingBox().b;
+    }
+
+    private Double getEntityMinY(Entity entity)
+    {
+        return ((CraftEntity) entity).getHandle().getBoundingBox().e;
+    }
+
+    private boolean isHalfBlock(Material mat) {
+        return mat.toString().contains("SLAB") || mat.toString().contains("STEP");
+    }
+
+    @SuppressWarnings("deprecation")
+    private SLABTYPE getSlabType(Block block)
+    {
+        if (block.getType() == Material.DOUBLE_STEP || block.getType() == Material.DOUBLE_STONE_SLAB2 || block.getType() == Material.WOOD_DOUBLE_STEP)
+            return SLABTYPE.DOUBLE;
+
+        if (block.getType() == Material.STEP || block.getType() == Material.WOOD_STEP)
+        {
+            if (block.getData() < 8)
+                return SLABTYPE.BOTTOM;
+            else
+                return SLABTYPE.TOP;
+        }
+
+        return SLABTYPE.NONSLAB;
+    }
 
     @Override
     public boolean isSameChest(Location chestLocation, Location clickedLocation) {
@@ -158,6 +193,112 @@ public class MCUtils_1_11_R1 extends MCUtilsBridge {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public LineOfSight hasLineOfSight(LivingEntity entityA, Player player, int maxDistance, Player debug) {
+
+        LineOfSight losResults = new LineOfSight();
+        losResults.visability = 0.0;
+
+        if (entityA.getLocation().distanceSquared(player.getLocation()) > 2304)
+            return losResults;
+
+        Vector entAVect = entityA.getLocation().subtract(player.getLocation().clone()).toVector().normalize();
+        losResults.direction = entAVect.dot(entityA.getLocation().getDirection());
+
+        //Traveling away
+        if (losResults.direction > 0.0D)
+            return losResults;
+
+        Location entBLoc = player.getEyeLocation();
+
+        int splitcnt = 5;
+        Double entityHeight = (getEntityMaxY(player) - getEntityMinY(player));
+        Double entityInterval = entityHeight/splitcnt;
+
+        for (int cnt = 0;cnt < (splitcnt+1);cnt++) {
+            losResults = testLineOfSight(losResults, entityA.getEyeLocation(), new Location(entBLoc.getWorld(), entBLoc.getX(), getEntityMinY(player)+(entityInterval*cnt), entBLoc.getZ()),maxDistance, debug);
+            if (losResults.visability <= 0.00)
+                return losResults;
+        }
+
+        return losResults;
+    }
+
+    private LineOfSight testLineOfSight(LineOfSight losResults, Location entityALoc, Location entityBLoc,  int maxDistance, Player debug) {
+
+        Vector viewDirection = entityBLoc.clone().subtract(entityALoc).toVector().normalize();
+        double distance = entityALoc.distanceSquared(entityBLoc);
+
+        Location lo = entityALoc.clone();
+        Location prior;
+
+        int maxIterations = 0;
+
+        while (true) {
+            if (lo.distanceSquared(entityBLoc) < 0.5) {
+                losResults.visability = 100.0;
+                return losResults;
+            } else if (lo.distanceSquared(entityALoc) > distance + 4) {
+                losResults.visability = 0.0;
+                return losResults;
+            }
+
+            losResults.visability -= getSolidLevel(lo.getBlock().getType());
+            if (losResults.visability <= 0.0) {
+                return losResults;
+            }
+
+            prior = lo.clone();
+            lo.add(viewDirection);
+
+            //Validate slabs?
+            if(isHalfBlock(lo.getBlock().getType()))
+            {
+
+                Double priorY = prior.getY() - prior.getBlockY();
+                Double newY = lo.getY() - lo.getBlockY();
+
+                switch (getSlabType(lo.getBlock())) {
+                    case TOP:
+                        if ((newY > 0.499999999) || (priorY > 0.499999999)) {
+                            losResults.visability = 0.0;
+                            return losResults;
+                        } else if ( prior.getY() != lo.getY() )
+                            losResults.visability = 0.0;
+                        return losResults;
+                    case BOTTOM:
+                        if ((newY < 0.5) || ((priorY < 0.5))) {
+                            losResults.visability = 0.0;
+                            return losResults;
+                        } else if ( prior.getY() != lo.getY() )
+                            losResults.visability = 0.0;
+                        return losResults;
+                    case DOUBLE:
+                        losResults.visability = 0.0;
+                        return losResults;
+                    case NONSLAB:
+                        losResults.visability = 0.0;
+                        return losResults;
+                }
+            }
+
+            maxIterations++;
+            if (maxIterations > 500) {
+                losResults.visability = 0.0;
+                return losResults;
+            }
+
+            if (debug != null)
+                spawnParticle(debug, lo);
+        }
+    }
+
+
+    private void spawnParticle(Player plr, Location loc)
+    {
+        plr.getPlayer().spawnParticle(Particle.VILLAGER_HAPPY, loc, 1);
     }
 
 }

@@ -2,10 +2,12 @@ package net.livecar.nuttyworks.npc_police.citizens;
 
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.util.DataKey;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.NPC_AWARDS;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.WANTED_SETTING;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -13,35 +15,20 @@ import java.util.Random;
 
 public class NPCPolice_Trait extends Trait {
 
-    @Persist
     public boolean hasMenu = false;
-    @Persist
     public boolean isGuard = false;
-    @Persist
     public int monitorPVP = -1;
-    @Persist
     public int maxDistance_Guard = -1;
-    @Persist
     public int minBountyAttack = -1;
-    @Persist
     public int lineOfSightAttack = -1;
-    @Persist
     public WANTED_SETTING wantedSetting = WANTED_SETTING.NONE;
-    @Persist
-    public NPC_AWARDS award_Style = NPC_AWARDS.NONE;
-    @Persist
-    public Double bounty_murder = -1.0D;
-    @Persist
-    public Double bounty_assault = -1.0D;
-    @Persist
-    public int time_murder = -1;
-    @Persist
-    public int time_assault = -1;
-    @Persist
+    public NPC_AWARDS awardStyle = NPC_AWARDS.NONE;
+    public Double bountyMurder = -1.0D;
+    public Double bountyAssault = -1.0D;
+    public int timeMurder = -1;
+    public int timeAssault = -1;
     public int idleRandomLookIntervalMin = 0;
-    @Persist
     public int idleRandomLookIntervalMax = 0;
-    @Persist
     public int idleRandomLookDegrees = 0;
 
     private LocalDateTime lastViewChange;
@@ -121,5 +108,93 @@ public class NPCPolice_Trait extends Trait {
         net.citizensnpcs.util.Util.assumePose(npc.getEntity(),  lastYawPosition+degreeChange, npc.getEntity().getLocation().getPitch());
         lastViewChange = LocalDateTime.now();
         
+    }
+
+    @Override
+    public void load(DataKey key)
+    {
+
+        hasMenu = key.getBoolean("hasMenu", false);
+        isGuard = key.getBoolean("isGuard", false);
+        monitorPVP = key.getInt("monitorPVP", -1);
+        maxDistance_Guard = key.getInt("maxDistance_Guard", -1);
+        minBountyAttack = key.getInt("minBountyAttack", -1);
+        lineOfSightAttack = key.getInt("lineOfSightAttack", -1);
+
+        if (!key.getString("wantedSetting", "").equals("")) {
+            String wantedStr = key.getString("wantedSetting", "");
+            for (WANTED_SETTING wanted : WANTED_SETTING.values()) {
+                if (wanted.name().equals(wantedStr.toUpperCase())) {
+                    wantedSetting = wanted;
+                }
+            }
+        }
+
+        if (!key.getString("awardStyle", "").equals("")) {
+            String awardStr = key.getString("awardStyle", "");
+            for (NPC_AWARDS style : NPC_AWARDS.values()) {
+                if (style.name().equals(awardStr.toUpperCase())) {
+                    awardStyle = style;
+                }
+            }
+        }
+
+        bountyMurder = key.getDouble("bountyMurder", bountyMurder);
+        bountyAssault = key.getDouble("bountyAssault", bountyAssault);
+
+        timeMurder = key.getInt("timeMurder", timeMurder);
+        timeAssault = key.getInt("timeAssault", timeAssault);
+        idleRandomLookIntervalMin = key.getInt("idleRandomLookIntervalMin", idleRandomLookIntervalMin);
+        idleRandomLookIntervalMax = key.getInt("idleRandomLookIntervalMax", idleRandomLookIntervalMax);
+        idleRandomLookDegrees = key.getInt("idleRandomLookDegrees", idleRandomLookDegrees);
+
+
+        if (key.keyExists("time_murder"))
+        {
+            timeMurder = key.getInt("time_murder", timeMurder);
+            key.removeKey("time_murder");
+        }
+        if (key.keyExists("time_assault"))
+        {
+            timeMurder = key.getInt("time_assault", timeMurder);
+            key.removeKey("time_assault");
+        }
+
+        if (key.keyExists("bounty_murder"))
+        {
+            bountyMurder = key.getDouble("bounty_murder", bountyMurder);
+            key.removeKey("bounty_murder");
+        }
+        if (key.keyExists("bounty_assault"))
+        {
+            bountyAssault = key.getDouble("bounty_assault", bountyMurder);
+            key.removeKey("bounty_assault");
+        }
+
+
+    }
+
+    @Override
+    public void save(DataKey key) {
+
+        key.setBoolean("hasMenu", hasMenu);
+        key.setBoolean("isGuard", isGuard);
+        key.setInt("monitorPVP", monitorPVP);
+        key.setInt("maxDistance_Guard", maxDistance_Guard);
+        key.setInt("minBountyAttack", minBountyAttack);
+        key.setInt("lineOfSightAttack", lineOfSightAttack);
+
+        key.setString("wantedSetting", wantedSetting.toString().toLowerCase());
+        key.setString("awardStyle", awardStyle.toString().toLowerCase());
+
+        key.setDouble("bountyMurder", bountyMurder);
+        key.setDouble("bountyAssault", bountyAssault);
+
+        key.setInt("timeMurder", timeMurder);
+        key.setInt("timeAssault", timeAssault);
+        key.setInt("idleRandomLookIntervalMin", idleRandomLookIntervalMin);
+        key.setInt("idleRandomLookIntervalMax", idleRandomLookIntervalMax);
+        key.setInt("idleRandomLookDegrees", idleRandomLookDegrees);
+
     }
 }

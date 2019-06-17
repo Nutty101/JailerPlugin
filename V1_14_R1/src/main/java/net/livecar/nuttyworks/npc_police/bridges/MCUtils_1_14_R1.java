@@ -2,9 +2,14 @@ package net.livecar.nuttyworks.npc_police.bridges;
 
 import org.bukkit.*;
 import org.bukkit.block.data.type.Chest;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -72,6 +77,40 @@ public class MCUtils_1_14_R1 extends MCUtilsBridge {
             return 0.0D;
 
         switch (material) {
+
+            case SANDSTONE_STAIRS:
+            case SMOOTH_QUARTZ_STAIRS:
+            case SMOOTH_RED_SANDSTONE_STAIRS:
+            case ACACIA_STAIRS:
+            case SMOOTH_SANDSTONE_STAIRS:
+            case SPRUCE_STAIRS:
+            case STONE_BRICK_STAIRS:
+            case ANDESITE_STAIRS:
+            case BIRCH_STAIRS:
+            case BRICK_STAIRS:
+            case COBBLESTONE_STAIRS:
+            case DARK_OAK_STAIRS:
+            case DARK_PRISMARINE_STAIRS:
+            case DIORITE_STAIRS:
+            case END_STONE_BRICK_STAIRS:
+            case GRANITE_STAIRS:
+            case JUNGLE_STAIRS:
+            case MOSSY_COBBLESTONE_STAIRS:
+            case MOSSY_STONE_BRICK_STAIRS:
+            case NETHER_BRICK_STAIRS:
+            case OAK_STAIRS:
+            case POLISHED_ANDESITE_STAIRS:
+            case POLISHED_DIORITE_STAIRS:
+            case POLISHED_GRANITE_STAIRS:
+            case PRISMARINE_BRICK_STAIRS:
+            case PRISMARINE_STAIRS:
+            case PURPUR_STAIRS:
+            case QUARTZ_STAIRS:
+            case RED_NETHER_BRICK_STAIRS:
+            case RED_SANDSTONE_STAIRS:
+            case STONE_STAIRS:
+                return 100.0;
+
             case ACACIA_LEAVES:
             case BIRCH_LEAVES:
             case DARK_OAK_LEAVES:
@@ -130,6 +169,7 @@ public class MCUtils_1_14_R1 extends MCUtilsBridge {
             case OAK_SIGN:
             case OAK_WALL_SIGN:
                 return 0.0;
+
             case ICE:
             case FROSTED_ICE:
             case BLUE_ICE:
@@ -208,6 +248,9 @@ public class MCUtils_1_14_R1 extends MCUtilsBridge {
                 return 65.00;
 
             default:
+                if (material.isOccluding())
+                    return 100.00;
+
                 return 0.00;
         }
     }
@@ -267,4 +310,209 @@ public class MCUtils_1_14_R1 extends MCUtilsBridge {
         return false;
     }
 
+    private Double getEntityMaxY(Entity entity)
+    {
+        return ((CraftEntity) entity).getHandle().getBoundingBox().maxY;
+    }
+
+    private Double getEntityMinY(Entity entity)
+    {
+        return ((CraftEntity) entity).getHandle().getBoundingBox().minY;
+    }
+    @Override
+    public LineOfSight hasLineOfSight(LivingEntity entityA, Player player, int maxDistance, Player debug) {
+
+        LineOfSight losResults = new LineOfSight();
+
+        losResults.distance = entityA.getLocation().distanceSquared(player.getLocation());
+
+        if (losResults.distance > 2304)
+            return losResults;
+
+        Vector entAVect = entityA.getLocation().subtract(player.getLocation().clone()).toVector().normalize();
+        losResults.direction = entAVect.dot(entityA.getLocation().getDirection());
+
+        //Traveling away
+        if (losResults.direction > 0.0D)
+            return losResults;
+
+        Location entBLoc = player.getEyeLocation();
+
+        int splitcnt = 5;
+        Double entityHeight = (getEntityMaxY(player) - getEntityMinY(player));
+        Double entityInterval = entityHeight/splitcnt;
+
+        for (int cnt = 0;cnt < (splitcnt+1);cnt++) {
+            losResults.visability = 100.0;
+            losResults = testLineOfSight(losResults, entityA, new Location(entBLoc.getWorld(), entBLoc.getX(), getEntityMinY(player)+(entityInterval*cnt), entBLoc.getZ()),maxDistance, debug);
+            if (losResults.visability > 0.00)
+                return losResults;
+        }
+
+        return losResults;
+    }
+
+    private LineOfSight testLineOfSight(LineOfSight losResults, LivingEntity entityA, Location entityBLoc,  int maxDistance, Player debug) {
+
+        Vector viewDirection = entityBLoc.clone().subtract(entityA.getEyeLocation()).toVector().normalize();
+        Location curLocation = entityA.getEyeLocation();
+
+        int cnt = 0;
+
+        Double distance = entityA.getLocation().distanceSquared(entityBLoc);
+
+        while (cnt<25)
+        {
+
+            RayTraceResult result = entityA.getWorld().rayTraceBlocks(curLocation, viewDirection, distance+90, FluidCollisionMode.ALWAYS, false);
+
+            if (result == null) {
+                losResults.visability = 100.0;
+                return losResults;
+            }
+
+            if(result.getHitBlock() != null) {
+                if (entityA.getLocation().distanceSquared(result.getHitBlock().getLocation()) > distance) {
+                    if (debug != null) {
+                        Location hitLoc = new Location(result.getHitBlock().getWorld(), result.getHitPosition().getX(), result.getHitPosition().getY(), result.getHitPosition().getZ());
+                        showLineOfSight(entityA.getEyeLocation(), entityBLoc,debug);
+                    }
+                    return losResults;
+                }
+
+                if (debug != null) {
+                    Location hitLoc = new Location(result.getHitBlock().getWorld(), result.getHitPosition().getX(), result.getHitPosition().getY(), result.getHitPosition().getZ());
+                    showLineOfSight(entityA.getEyeLocation(), hitLoc,debug);
+                }
+
+                losResults.visability -= materialBlocking(result.getHitBlock().getType());
+                if (losResults.visability < 0.0)
+                {
+                    return losResults;
+                } else {
+                    curLocation = new Location(result.getHitBlock().getWorld(), result.getHitPosition().getX(),result.getHitPosition().getY(),result.getHitPosition().getZ());
+                    curLocation.setDirection(entityA.getEyeLocation().getDirection());
+                }
+            }
+
+            cnt++;
+        }
+
+        return losResults;
+    }
+
+    private void showLineOfSight(Location entityALoc, Location entityBLoc, Player debug) {
+
+        Vector viewDirection = entityBLoc.clone().subtract(entityALoc).toVector().normalize();
+        double distance = entityALoc.distanceSquared(entityBLoc);
+
+        Location lo = entityALoc.clone();
+        Location prior;
+
+        int maxIterations = 0;
+
+        while (true) {
+
+            if (lo.distanceSquared(entityALoc) > distance + 4) {
+                return;
+            }
+
+            if (lo.distanceSquared(entityBLoc) < 0.5)
+                return;
+
+            prior = lo.clone();
+            lo.add(viewDirection);
+
+
+            maxIterations++;
+            if (maxIterations > 500) {
+
+                return;
+            }
+
+            if (debug != null)
+                debug.spawnParticle(Particle.VILLAGER_HAPPY, lo, 1);
+        }
+    }
+
+    private double materialBlocking(Material material)
+    {
+        switch (material) {
+            case BLACK_STAINED_GLASS:
+            case BLUE_STAINED_GLASS:
+            case BROWN_STAINED_GLASS:
+            case CYAN_STAINED_GLASS:
+            case GRAY_STAINED_GLASS:
+            case GREEN_STAINED_GLASS:
+            case LIGHT_BLUE_STAINED_GLASS:
+            case LIGHT_GRAY_STAINED_GLASS:
+            case LIME_STAINED_GLASS:
+            case MAGENTA_STAINED_GLASS:
+            case ORANGE_STAINED_GLASS:
+            case PINK_STAINED_GLASS:
+            case PURPLE_STAINED_GLASS:
+            case RED_STAINED_GLASS:
+            case WHITE_STAINED_GLASS:
+            case YELLOW_STAINED_GLASS:
+                return 8.0;
+
+            case BLACK_STAINED_GLASS_PANE:
+            case BLUE_STAINED_GLASS_PANE:
+            case BROWN_STAINED_GLASS_PANE:
+            case CYAN_STAINED_GLASS_PANE:
+            case GRAY_STAINED_GLASS_PANE:
+            case GREEN_STAINED_GLASS_PANE:
+            case LIGHT_BLUE_STAINED_GLASS_PANE:
+            case LIGHT_GRAY_STAINED_GLASS_PANE:
+            case LIME_STAINED_GLASS_PANE:
+            case MAGENTA_STAINED_GLASS_PANE:
+            case ORANGE_STAINED_GLASS_PANE:
+            case PINK_STAINED_GLASS_PANE:
+            case PURPLE_STAINED_GLASS_PANE:
+            case RED_STAINED_GLASS_PANE:
+            case WHITE_STAINED_GLASS_PANE:
+            case YELLOW_STAINED_GLASS_PANE:
+                return 8.0;
+
+            case GLASS_PANE:
+            case GLASS:
+                return 5;
+
+            case ICE:
+                return 20.0;
+
+            case FROSTED_ICE:
+            case BLUE_ICE:
+            case PACKED_ICE:
+                return 100.0;
+
+            case ACACIA_FENCE:
+            case BIRCH_FENCE:
+            case DARK_OAK_FENCE:
+            case JUNGLE_FENCE:
+            case OAK_FENCE:
+            case SPRUCE_FENCE:
+                return 25.0;
+
+            case IRON_BARS:
+                return 20.0;
+
+            case ACACIA_FENCE_GATE:
+            case BIRCH_FENCE_GATE:
+            case DARK_OAK_FENCE_GATE:
+            case JUNGLE_FENCE_GATE:
+            case OAK_FENCE_GATE:
+            case SPRUCE_FENCE_GATE:
+                return 10.0;
+
+            case BARRIER:
+                return 0.0;
+
+            case LADDER:
+                return 65.00;
+
+            default:
+                return 100.00;
+        }
+    }
 }

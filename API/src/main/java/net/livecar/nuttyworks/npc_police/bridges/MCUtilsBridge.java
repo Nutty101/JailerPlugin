@@ -3,6 +3,9 @@ package net.livecar.nuttyworks.npc_police.bridges;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,4 +42,14 @@ public abstract class MCUtilsBridge {
     abstract public void PlayOutParticle(String particleType, Location partLocation, Player player);
 
     abstract public boolean isSameChest(Location chestLocation, Location clickedLocation);
+
+    abstract public LineOfSight hasLineOfSight(LivingEntity entityA, Player player, int maxDistance, Player debug);
+
+    public enum SLABTYPE {
+        TOP,
+        BOTTOM,
+        DOUBLE,
+        NONSLAB
+    }
+
 }

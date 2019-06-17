@@ -45,6 +45,7 @@ public class World_Setting {
 
     // Enabled features
     private Enumerations.ESCAPE_SETTING escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
+    private Integer escapeLastSeenInJail = -1;
 
     // Bounty Settings
     private Double bounty_Damage = -1.0D;
@@ -563,6 +564,18 @@ public class World_Setting {
     public void setEscapeSetting(Enumerations.ESCAPE_SETTING enabled)
     {
         this.escapeSetting = enabled;
+    }
+
+    public int getEscapeLastSeen()
+    {
+        return this.escapeLastSeenInJail;
+    }
+
+    public void setEscapeLastSeen(int escapeLastSeenInJail)
+    {
+        if (escapeLastSeenInJail == -1.0D && world_Name.equalsIgnoreCase("_GlobalSettings"))
+            return;
+        this.escapeLastSeenInJail = escapeLastSeenInJail;
     }
 
 }

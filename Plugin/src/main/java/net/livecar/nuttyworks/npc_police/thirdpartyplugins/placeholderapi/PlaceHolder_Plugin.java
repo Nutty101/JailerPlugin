@@ -91,6 +91,14 @@ public class PlaceHolder_Plugin extends PlaceholderExpansion {
                     if (plrRecord.getLastEscape().getTime() < 1451606400000L)
                         return "";
                     return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastEscape()).toString());
+                case "user_lastspotted_name":
+                    if (plrRecord.getLastSpottedBy() == null)
+                        return "";
+                    return plrRecord.getLastSpottedBy().getFullName();
+                case "user_lastspotted_time":
+                    if (plrRecord.getLastSpottedTime().getTime() < 1451606400000L)
+                        return "";
+                    return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastSpottedTime()).toString());
                 default:
                     break;
             }

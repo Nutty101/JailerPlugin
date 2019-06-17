@@ -306,9 +306,9 @@ public class Commands_NPCConfig {
             npc.addTrait(NPCPolice_Trait.class);
 
         if (inargs.length == 1) {
-            npc.getTrait(NPCPolice_Trait.class).bounty_assault = -1.0D;
+            npc.getTrait(NPCPolice_Trait.class).bountyAssault = -1.0D;
         } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
-            npc.getTrait(NPCPolice_Trait.class).bounty_assault = Double.parseDouble(inargs[1]);
+            npc.getTrait(NPCPolice_Trait.class).bountyAssault = Double.parseDouble(inargs[1]);
         } else {
             policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
         }
@@ -337,9 +337,9 @@ public class Commands_NPCConfig {
             npc.addTrait(NPCPolice_Trait.class);
 
         if (inargs.length == 1) {
-            npc.getTrait(NPCPolice_Trait.class).bounty_murder = -1.0D;
+            npc.getTrait(NPCPolice_Trait.class).bountyMurder = -1.0D;
         } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
-            npc.getTrait(NPCPolice_Trait.class).bounty_murder = Double.parseDouble(inargs[1]);
+            npc.getTrait(NPCPolice_Trait.class).bountyMurder = Double.parseDouble(inargs[1]);
         } else {
             policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
         }
@@ -368,9 +368,9 @@ public class Commands_NPCConfig {
             npc.addTrait(NPCPolice_Trait.class);
 
         if (inargs.length == 1) {
-            npc.getTrait(NPCPolice_Trait.class).time_assault = -1;
+            npc.getTrait(NPCPolice_Trait.class).timeAssault = -1;
         } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
-            npc.getTrait(NPCPolice_Trait.class).time_assault = Integer.parseInt(inargs[1]);
+            npc.getTrait(NPCPolice_Trait.class).timeAssault = Integer.parseInt(inargs[1]);
         } else {
             policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
         }
@@ -399,9 +399,9 @@ public class Commands_NPCConfig {
             npc.addTrait(NPCPolice_Trait.class);
 
         if (inargs.length == 1) {
-            npc.getTrait(NPCPolice_Trait.class).time_murder = -1;
+            npc.getTrait(NPCPolice_Trait.class).timeMurder = -1;
         } else if (policeRef.getUtilities.isNumeric(inargs[1])) {
-            npc.getTrait(NPCPolice_Trait.class).time_murder = Integer.parseInt(inargs[1]);
+            npc.getTrait(NPCPolice_Trait.class).timeMurder = Integer.parseInt(inargs[1]);
         } else {
             policeRef.getMessageManager.sendMessage(sender, "general_messages.config_command_numeric");
         }

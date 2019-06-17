@@ -1,5 +1,6 @@
 package net.livecar.nuttyworks.npc_police.api.managers;
 
+import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
 import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.CURRENT_STATUS;
@@ -204,5 +205,14 @@ public class Core_PlayerManager extends PlayerManager {
         playerRecord.setWantedLevelForced(wantedLevel, reason, report);
     }
 
+    @Override
+    public NPC getLastSpottedBy() {
+        return playerRecord.getLastSpottedBy();
+    }
+
+    @Override
+    public Date getLastSpottedTime() {
+        return playerRecord.getLastSpottedTime();
+    }
 
 }

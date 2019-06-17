@@ -257,8 +257,12 @@ public class NPC_Police {
     }
 
     private boolean setupPermissions() {
-        RegisteredServiceProvider<Permission> rsp = pluginInstance.getServer().getServicesManager()
-                .getRegistration(Permission.class);
+        RegisteredServiceProvider<Permission> rsp = pluginInstance.getServer().getServicesManager().getRegistration(Permission.class);
+        if (rsp.getProvider() == null)
+        {
+            return this.getPermissionManager != null;
+        }
+
         this.getPermissionManager = rsp.getProvider();
         if (this.getPermissionManager.getName().equalsIgnoreCase("superperms")) {
             //Groups are not supported -- plugin_invalidpermplugin

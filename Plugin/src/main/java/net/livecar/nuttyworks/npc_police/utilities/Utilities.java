@@ -1,10 +1,13 @@
 package net.livecar.nuttyworks.npc_police.utilities;
 
 import net.livecar.nuttyworks.npc_police.NPC_Police;
+import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -115,58 +118,6 @@ public class Utilities {
 
     public String locationToString(Location oLoc, String splitString) {
         return "" + oLoc.getBlockX() + splitString + oLoc.getBlockY() + splitString + oLoc.getBlockZ() + splitString + oLoc.getWorld().getName();
-    }
-
-    public boolean hasLineOfSight(LivingEntity entityA, LivingEntity entityB) {
-
-        if (entityA.getLocation().distanceSquared(entityB.getLocation()) > 2304)
-            return false;
-
-        Vector entAVect = entityA.getLocation().subtract(entityB.getLocation().clone()).toVector().normalize();
-        double direction = entAVect.dot(entityA.getLocation().getDirection());
-
-        //Traveling away
-        if (direction > 0.0D)
-            return false;
-
-        if (testLineOfSight(entityA.getEyeLocation(), ((Player) entityB).getEyeLocation()))
-            return true;
-        if (testLineOfSight(entityA.getEyeLocation(), ((Player) entityB).getEyeLocation().add(0, -1, 0)))
-            return true;
-        return false;
-    }
-
-    private boolean testLineOfSight(Location entityALoc, Location entityBLoc) {
-
-        Vector viewDirection = entityBLoc.clone().subtract(entityALoc).toVector().normalize();
-        double distance = entityALoc.distanceSquared(entityBLoc);
-
-        final Location lo = new Location(entityALoc.getWorld(), entityALoc.getBlockX() + 0.5, entityALoc.getBlockY() + 0.5, entityALoc.getBlockZ() + 0.5);
-
-        int maxIterations = 0;
-        Double solidLevel = 0.0;
-
-        while (true) {
-            if (lo.distanceSquared(entityBLoc) < 0.5) {
-                return true;
-            } else if (lo.distanceSquared(entityALoc) > distance + 4) {
-                return false;
-            }
-
-            solidLevel += getSolidLevel(lo.getBlock().getType());
-            if (solidLevel >= 100.0)
-                return false;
-
-            lo.add(viewDirection);
-            maxIterations++;
-            if (maxIterations > 500) {
-                return false;
-            }
-        }
-    }
-
-    private Double getSolidLevel(Material material) {
-        return this.getStorageReference.getVersionBridge.getSolidLevel(material);
     }
 
     public String secondsToTime(long totalSeconds) {
@@ -316,4 +267,5 @@ public class Utilities {
 
         return true;
     }
+
 }
