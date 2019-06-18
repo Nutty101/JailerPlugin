@@ -104,7 +104,11 @@ public class DamageListener implements Listener {
                     final Player player = Bukkit.getPlayer(damaged.getUniqueId());
                     Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
 
-                    KICK_ACTION kickAction = plrRecord.playerKickCheck(tmpWorld, false);
+                    KICK_ACTION kickAction = KICK_ACTION.NOACTION;
+                    kickAction = plrRecord.playerKickCheck(tmpWorld, false);
+                    if (kickAction == null)
+                        kickAction = KICK_ACTION.NOACTION;
+
                     if (kickAction == KICK_ACTION.SERVER) {
                         event.setDamage(((Player) damaged).getHealth() - 1);
                         return;
