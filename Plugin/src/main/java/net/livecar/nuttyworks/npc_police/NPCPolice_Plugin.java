@@ -6,6 +6,7 @@ import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
 import net.livecar.nuttyworks.npc_police.listeners.BungeeCordListener;
 import net.livecar.nuttyworks.npc_police.listeners.DamageListener;
+import net.livecar.nuttyworks.npc_police.listeners.PlayerListener;
 import net.livecar.nuttyworks.npc_police.metrics.BStat_Metrics;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.betonquest.betonquest_1_9.BetonQuest_Plugin_V1_9;
 import net.livecar.nuttyworks.npc_police.thirdpartyplugins.leaderheads.LeaderHeads_Plugin;
@@ -240,6 +241,7 @@ public class NPCPolice_Plugin extends org.bukkit.plugin.java.JavaPlugin implemen
 
         // Register events
         Bukkit.getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(policeStorage_Class), this);
 
         policeStorage_Class.getCustomDamageListenerClass = new DamageListener(policeStorage_Class);
         Bukkit.getPluginManager().registerEvents(policeStorage_Class.getCustomDamageListenerClass, this);

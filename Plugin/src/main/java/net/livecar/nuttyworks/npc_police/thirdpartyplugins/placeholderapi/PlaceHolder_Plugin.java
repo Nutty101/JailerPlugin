@@ -46,62 +46,75 @@ public class PlaceHolder_Plugin extends PlaceholderExpansion {
             if (plrRecord.getCurrentStatus() == null)
                 return "";
 
-            switch (identifier) {
-                case "user_bounty":
-                    return String.valueOf(plrRecord.getBountyInt());
-                case "user_totalbounty":
-                    return String.valueOf(plrRecord.getTotalBountyInt());
-                case "user_status":
-                    if (plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED) {
-                        switch (plrRecord.isInCell()) {
-                            case FALSE:
-                                return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed_outcell")[0];
-                            case NOTSET:
-                                return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed")[0];
-                            case TRUE:
-                                return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed_incell")[0];
-                            default:
-                                break;
-                        }
-                    } else
-                        return plrRecord.getCurrentStatus().toString();
-                case "user_prior":
-                    return plrRecord.getPriorStatus().toString();
-                case "user_jailtime":
-                    Long secondsLeft = plrRecord.getPlayerJailTime();
-                    if (secondsLeft == Long.MAX_VALUE)
-                        return getStorageReference.getMessageManager.getResultMessage("result_Messages.endless")[0];
-                    return getStorageReference.getUtilities.secondsToTime(secondsLeft);
-                case "user_jail":
-                    if (plrRecord.currentJail == null)
-                        return "";
-                    else
-                        return plrRecord.currentJail.displayName;
-                case "user_ttl_arrests":
-                    return String.valueOf(plrRecord.getStat("ARRESTED"));
-                case "user_ttl_murders":
-                    return String.valueOf(plrRecord.getStat("MURDER"));
-                case "user_ttl_escapes":
-                    return String.valueOf(plrRecord.getStat("ESCAPE"));
-                case "user_lst_arrest":
-                    if (plrRecord.getLastArrest().getTime() < 1451606400000L)
-                        return "";
-                    return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastArrest()).toString());
-                case "user_lst_escape":
-                    if (plrRecord.getLastEscape().getTime() < 1451606400000L)
-                        return "";
-                    return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastEscape()).toString());
-                case "user_lastspotted_name":
-                    if (plrRecord.getLastSpottedBy() == null)
-                        return "";
-                    return plrRecord.getLastSpottedBy().getFullName();
-                case "user_lastspotted_time":
-                    if (plrRecord.getLastSpottedTime().getTime() < 1451606400000L)
-                        return "";
-                    return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastSpottedTime()).toString());
-                default:
-                    break;
+            if (identifier.startsWith("user_")) {
+                switch (identifier) {
+                    case "user_bounty":
+                        return String.valueOf(plrRecord.getBountyInt());
+                    case "user_totalbounty":
+                        return String.valueOf(plrRecord.getTotalBountyInt());
+                    case "user_status":
+                        if (plrRecord.getCurrentStatus() == CURRENT_STATUS.JAILED) {
+                            switch (plrRecord.isInCell()) {
+                                case FALSE:
+                                    return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed_outcell")[0];
+                                case NOTSET:
+                                    return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed")[0];
+                                case TRUE:
+                                    return getStorageReference.getMessageManager.getResultMessage("result_messages.jailed_incell")[0];
+                                default:
+                                    break;
+                            }
+                        } else
+                            return plrRecord.getCurrentStatus().toString();
+                    case "user_prior":
+                        return plrRecord.getPriorStatus().toString();
+                    case "user_jailtime":
+                        Long secondsLeft = plrRecord.getPlayerJailTime();
+                        if (secondsLeft == Long.MAX_VALUE)
+                            return getStorageReference.getMessageManager.getResultMessage("result_Messages.endless")[0];
+                        return getStorageReference.getUtilities.secondsToTime(secondsLeft);
+                    case "user_jail":
+                        if (plrRecord.currentJail == null)
+                            return "";
+                        else
+                            return plrRecord.currentJail.displayName;
+                    case "user_ttl_arrests":
+                        return String.valueOf(plrRecord.getStat("ARRESTED"));
+                    case "user_ttl_murders":
+                        return String.valueOf(plrRecord.getStat("MURDER"));
+                    case "user_ttl_escapes":
+                        return String.valueOf(plrRecord.getStat("ESCAPE"));
+                    case "user_lst_arrest":
+                        if (plrRecord.getLastArrest().getTime() < 1451606400000L)
+                            return "";
+                        return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastArrest()).toString());
+                    case "user_lst_escape":
+                        if (plrRecord.getLastEscape().getTime() < 1451606400000L)
+                            return "";
+                        return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastEscape()).toString());
+                    case "user_lastspotted_name":
+                        if (plrRecord.getLastSpottedBy() == null)
+                            return "";
+                        return plrRecord.getLastSpottedBy().getFullName();
+                    case "user_lastspotted_time":
+                        if (plrRecord.getLastSpottedTime().getTime() < 1451606400000L)
+                            return "";
+                        return (new SimpleDateFormat("MMM dd HH:mm").format(plrRecord.getLastSpottedTime()).toString());
+                    default:
+                        break;
+                }
+                return "";
             }
+            if (identifier.startsWith("scores_")) {
+                String[] parts = identifier.split("_");
+                switch (parts[1]) {
+                    case "wanted":
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             return "";
         } catch (Exception err) {
             return "";

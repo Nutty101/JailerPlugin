@@ -30,6 +30,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     private String dbLogin;
     private String dbPass;
     private String dbTablePrefix;
+    private boolean dbSSL;
     private NPC_Police getStorageReference;
 
     public Database_MySql(NPC_Police policeRef, ArrayBlockingQueue<Database_QueuedRequest> processQueue, ArrayBlockingQueue<Database_QueuedRequest> resultQueue) {
@@ -42,6 +43,7 @@ public class Database_MySql extends Thread implements Database_Interface {
         dbName = getStorageReference.getDefaultConfig.getString("database.name");
         dbLogin = getStorageReference.getDefaultConfig.getString("database.login");
         dbPass = getStorageReference.getDefaultConfig.getString("database.password");
+        dbSSL = getStorageReference.getDefaultConfig.getBoolean("database.usessl",false);
         dbTablePrefix = getStorageReference.getDefaultConfig.getString("database.table_prefix");
     }
 
@@ -59,7 +61,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public void openDatabase() {
         if (dbConnection == null) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
                 try (Statement sqlStatement = dbConnection.createStatement()) {
                     sqlStatement.setQueryTimeout(2);
                     try (ResultSet results = sqlStatement.executeQuery("SHOW TABLES LIKE '" + dbTablePrefix + "_Players'")) {
@@ -236,7 +238,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public Arrest_Record getUserData(OfflinePlayer player) {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -319,7 +321,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public void saveUserData(Arrest_Record playerData) {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -431,7 +433,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getLastArrests() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -471,7 +473,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getLastEscapes() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -513,7 +515,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getMostMurders() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -548,7 +550,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getMostEscapes() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -584,7 +586,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getMostArrests() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -616,7 +618,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getCurrentBounties() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
@@ -651,7 +653,7 @@ public class Database_MySql extends Thread implements Database_Interface {
     public List<Entry<?, Double>> getTotalBounties() {
         if (!this.isDbConnected()) {
             try {
-                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName, dbLogin, dbPass);
+                dbConnection = DriverManager.getConnection("jdbc:mysql://" + this.dbHost + ":" + dbPort + "/" + dbName + (dbSSL?"?useSSL=true":"?useSSL=false"), dbLogin, dbPass);
             } catch (SQLException e) {
                 // Problems!
                 Bukkit.getServer().getLogger().log(Level.SEVERE, "[NPC POLICE] Failure creating database connection");
