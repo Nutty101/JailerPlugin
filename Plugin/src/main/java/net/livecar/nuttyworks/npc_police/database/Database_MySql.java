@@ -185,11 +185,20 @@ public class Database_MySql extends Thread implements Database_Interface {
 
     private void processQueue() throws InterruptedException {
         synchronized (processingRequests) {
+            if (processingRequests == null) {
+                return;
+            }
+
+            if (this.isInterrupted() && processingRequests.isEmpty()) {
+                processingRequests = null;
+                return;
+            }
+
             if (processingRequests.isEmpty()) {
                 sleeping = true;
                 processingRequests.wait();
             }
-
+            
             if (processingRequests != null) {
                 while (!processingRequests.isEmpty()) {
                     Database_QueuedRequest newRequest = processingRequests.take();

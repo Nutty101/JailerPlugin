@@ -88,6 +88,8 @@ public class Database_Manager {
                 break;
         }
 
+        processingRequests.clear();
+
         loopCounter = 0;
         while (!this.getDatabaseManager.isSleeping()) {
             try {
@@ -102,6 +104,7 @@ public class Database_Manager {
         }
 
         this.getDatabaseManager.closeConnections();
+        getStorageReference.getMessageManager.consoleMessage("console_messages.plugin_savingdata");
         return true;
     }
 

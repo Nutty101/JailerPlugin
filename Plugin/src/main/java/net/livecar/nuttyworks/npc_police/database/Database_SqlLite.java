@@ -152,6 +152,15 @@ public class Database_SqlLite extends Thread implements Database_Interface {
 
     private void processQueue() throws InterruptedException {
         synchronized (processingRequests) {
+            if (processingRequests == null) {
+                return;
+            }
+
+            if (this.isInterrupted() && processingRequests.isEmpty()) {
+                processingRequests = null;
+                return;
+            }
+
             if (processingRequests.isEmpty()) {
                 sleeping = true;
                 processingRequests.wait();
