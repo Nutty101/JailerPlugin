@@ -503,4 +503,29 @@ public class Commands_NPCConfig {
         return true;
     }
 
+    @CommandInfo(
+            name = "npcignore",
+            group = "NPC Configuration",
+            badArgumentsMessage = "command_npcignore_args",
+            helpMessage = "command_npcignore_help",
+            arguments = {"--npc", "<npc>"},
+            permission = "npcpolice.npc.ignore",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 0
+    )
+    public boolean serverWorldConfig_NPCIgnore(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (npc == null) {
+            policeRef.getMessageManager.sendMessage(sender, "general_messages.invalid_npc");
+            return true;
+        }
+        if (!npc.hasTrait(NPCPolice_Trait.class))
+            npc.addTrait(NPCPolice_Trait.class);
+
+        npc.getTrait(NPCPolice_Trait.class).ignoresAssault = !npc.getTrait(NPCPolice_Trait.class).ignoresAssault;
+
+        policeRef.getMessageManager.sendMessage(sender, "npc_settings", npc.getTrait(NPCPolice_Trait.class));
+        return true;
+    }
+
 }

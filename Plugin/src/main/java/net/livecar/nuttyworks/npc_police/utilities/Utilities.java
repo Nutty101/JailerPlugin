@@ -78,13 +78,6 @@ public class Utilities {
         return null;
     }
 
-    public boolean isNumeric(String value) {
-        value = value.replaceAll("-", "").replaceAll("\\.", "");
-        if (value.trim().equals(""))
-            return false;
-        return (StringUtils.isNumeric(value));
-    }
-
     public boolean tryParseInt(String value) {
         try {
             Integer.parseInt(value);
@@ -266,6 +259,10 @@ public class Utilities {
         }
 
         return true;
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
     }
 
 }

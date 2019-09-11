@@ -17,6 +17,7 @@ public class NPCPolice_Trait extends Trait {
 
     public boolean hasMenu = false;
     public boolean isGuard = false;
+    public boolean ignoresAssault = false;
     public int monitorPVP = -1;
     public int maxDistance_Guard = -1;
     public int minBountyAttack = -1;
@@ -117,6 +118,7 @@ public class NPCPolice_Trait extends Trait {
         hasMenu = key.getBoolean("hasMenu", false);
         isGuard = key.getBoolean("isGuard", false);
         monitorPVP = key.getInt("monitorPVP", -1);
+        ignoresAssault = key.getBoolean("ignoreAssault", false);
         maxDistance_Guard = key.getInt("maxDistance_Guard", -1);
         minBountyAttack = key.getInt("minBountyAttack", -1);
         lineOfSightAttack = key.getInt("lineOfSightAttack", -1);
@@ -179,6 +181,7 @@ public class NPCPolice_Trait extends Trait {
 
         key.setBoolean("hasMenu", hasMenu);
         key.setBoolean("isGuard", isGuard);
+        key.setBoolean("ignoreAssault",ignoresAssault);
         key.setInt("monitorPVP", monitorPVP);
         key.setInt("maxDistance_Guard", maxDistance_Guard);
         key.setInt("minBountyAttack", minBountyAttack);

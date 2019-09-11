@@ -206,6 +206,11 @@ public class DamageListener implements Listener {
             if (npc.hasTrait(NPCPolice_Trait.class))
                 npcTrait = npc.getTrait(NPCPolice_Trait.class);
 
+            if (npcTrait != null && npcTrait.ignoresAssault) {
+                //Configured to not monitor the damage
+                return;
+            }
+
             Player player = (Player) damager;
             Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
 
@@ -234,7 +239,6 @@ public class DamageListener implements Listener {
 
                 if (regionFlags.regionGuard) {
                     // Future commands could be called for???
-
                 } else if (npcTrait != null && npcTrait.isGuard) {
                     // Attacking a guard. Adds bounty
                 } else {
