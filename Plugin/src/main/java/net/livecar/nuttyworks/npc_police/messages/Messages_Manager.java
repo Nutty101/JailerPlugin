@@ -247,6 +247,8 @@ public class Messages_Manager {
                 message = message.replaceAll("<trait\\.hasmenu>", !npcTrait.hasMenu ? "X\",\"color\":\"red" : "✔\",\"color\":\"white");
             if (message.toLowerCase().contains("<trait.isguard>"))
                 message = message.replaceAll("<trait\\.isguard>", !npcTrait.isGuard ? "X\",\"color\":\"red" : "✔\",\"color\":\"white");
+            if (message.toLowerCase().contains("<trait.ignore>"))
+                message = message.replaceAll("<trait\\.ignore>", !npcTrait.ignoresAssault ? "X\",\"color\":\"red" : "✔\",\"color\":\"white");
             if (message.toLowerCase().contains("<trait.monitorpvp>"))
                 message = message.replaceAll("<trait\\.monitorpvp>", npcTrait.monitorPVP < 0 ? this.getResultMessage("result_Messages.notset")[0] + "\",\"color\":\"green" : (npcTrait.monitorPVP == 0 ? "X\",\"color\":\"red" : "✔\",\"color\":\"white"));
             if (message.toLowerCase().contains("<trait.maxguarddistance>"))
