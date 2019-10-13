@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.logging.Level;
 
 public class PlayerDataManager {
 
@@ -157,6 +158,7 @@ public class PlayerDataManager {
     }
 
     private void SavePlayers() {
+        Bukkit.getLogger().log(Level.INFO, "Saving all players");
         for (Arrest_Record plrRecord : getStorageReference.getPlayerManager.getPlayerRecords()) {
             getStorageReference.getDatabaseManager.queueSavePlayerRequest(plrRecord);
         }

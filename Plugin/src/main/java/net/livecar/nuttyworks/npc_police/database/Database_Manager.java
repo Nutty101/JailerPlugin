@@ -72,9 +72,9 @@ public class Database_Manager {
         if (this.databaseThread == null)
             return false;
 
-        getStorageReference.getMessageManager.consoleMessage("console_messages.plugin_savingdata");
-
         // This can pause the server (but it's closing down anyway, who cares)
+        processingRequests.add(new Database_QueuedRequest(RequestType.SHUTDOWN));
+
         int loopCounter = 0;
         while (!processingRequests.isEmpty()) {
             this.databaseThread.interrupt();
@@ -88,8 +88,6 @@ public class Database_Manager {
                 break;
         }
 
-        processingRequests.clear();
-
         loopCounter = 0;
         while (!this.getDatabaseManager.isSleeping()) {
             try {
@@ -100,11 +98,11 @@ public class Database_Manager {
             loopCounter++;
             if (loopCounter > 50)
                 break;
-
         }
 
+
         this.getDatabaseManager.closeConnections();
-        getStorageReference.getMessageManager.consoleMessage("console_messages.plugin_savingdata");
+        Bukkit.getLogger().log(Level.INFO, "[NPC-Police] Database Processing Stopped." + this.databaseThread.getState());
         return true;
     }
 

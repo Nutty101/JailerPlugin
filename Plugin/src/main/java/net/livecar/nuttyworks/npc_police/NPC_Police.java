@@ -23,13 +23,17 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Set;
 import java.util.logging.Level;
+
+import static org.bukkit.Bukkit.getServer;
 
 public class NPC_Police {
     // For quick reference to this instance of the plugin.
@@ -274,7 +278,7 @@ public class NPC_Police {
 
     public Boolean hasPermissions(CommandSender player, String permission) {
         if (player instanceof Player) {
-            if (player.isOp())
+            if (player.isOp() && !permission.toLowerCase().startsWith("npcpolice.bypass."))
                 return true;
 
             if (permission.toLowerCase().startsWith("npcpolice.stats.") && player.hasPermission("npcpolice.stats.*"))
@@ -301,8 +305,36 @@ public class NPC_Police {
             if (permission.toLowerCase().startsWith("npcpolice.settings.npc.") && player.hasPermission("npcpolice.settings.npc.*"))
                 return true;
 
+            if (permission.toLowerCase().startsWith("npcpolice.bypass.") && player.hasPermission(new org.bukkit.permissions.Permission("npcpolice.bypass.*", PermissionDefault.FALSE)))
+                return true;
+
+            //Validate the bypass for op's
+            if (player.isOp()) {
+                    if (player.hasPermission(new org.bukkit.permissions.Permission(permission, PermissionDefault.FALSE)))
+                        return true;
+                    else {
+                        return false;
+                    }
+            }
+
             return player.hasPermission(permission);
         }
         return true;
+    }
+
+    public void registerPermission(String permission)
+    {
+        Set<org.bukkit.permissions.Permission> permissions = getServer().getPluginManager().getPermissions();
+        org.bukkit.permissions.Permission bukkitPerm = new org.bukkit.permissions.Permission(permission);
+
+        if (!permissions.contains(permission))
+        {
+            try {
+                getServer().getPluginManager().addPermission(bukkitPerm);
+            } catch (Exception err)
+            {
+                return;
+            }
+        }
     }
 }

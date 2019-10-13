@@ -178,6 +178,7 @@ public class Database_MySql extends Thread implements Database_Interface {
                 // Wakeup call or activity requested
             }
             if (processingRequests == null) {
+                Bukkit.getLogger().log(Level.INFO, "[NPC-Police] Database Thread Existing..");
                 return;
             }
         }
@@ -234,6 +235,10 @@ public class Database_MySql extends Thread implements Database_Interface {
                             saveUserData(newRequest.getPlayerRecord());
                             returnedRequests.put(new Database_QueuedRequest(RequestType.REMOVE_USER, newRequest.getPlayerRecord()));
                             break;
+                        case SHUTDOWN:
+                            processingRequests.clear();
+                            processingRequests = null;
+                            return;
                         default:
                             break;
 

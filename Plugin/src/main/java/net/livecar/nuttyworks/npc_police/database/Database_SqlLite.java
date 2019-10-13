@@ -7,6 +7,7 @@ import net.livecar.nuttyworks.npc_police.api.Enumerations.JAILED_BOUNTY;
 import net.livecar.nuttyworks.npc_police.api.Wanted_Information;
 import net.livecar.nuttyworks.npc_police.database.Database_QueuedRequest.RequestType;
 import net.livecar.nuttyworks.npc_police.players.Arrest_Record;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.logging.Level;
 
 public class Database_SqlLite extends Thread implements Database_Interface {
     private Connection dbConnection = null;
@@ -141,23 +143,22 @@ public class Database_SqlLite extends Thread implements Database_Interface {
                 // Process the queue if there are any requests pending and then
                 // wait.
                 sleeping = false;
-                processQueue();
+                if (processingRequests != null) {
+                    processQueue();
+                }
             } catch (InterruptedException e) {
                 // Wakeup call or activity requested
             }
-            if (processingRequests == null)
+            if (processingRequests == null) {
+                Bukkit.getLogger().log(Level.INFO, "[NPC-Police] Database Thread Existing..");
                 return;
+            }
         }
     }
 
     private void processQueue() throws InterruptedException {
         synchronized (processingRequests) {
             if (processingRequests == null) {
-                return;
-            }
-
-            if (this.isInterrupted() && processingRequests.isEmpty()) {
-                processingRequests = null;
                 return;
             }
 
@@ -201,6 +202,10 @@ public class Database_SqlLite extends Thread implements Database_Interface {
                             saveUserData(newRequest.getPlayerRecord());
                             returnedRequests.put(new Database_QueuedRequest(RequestType.REMOVE_USER, newRequest.getPlayerRecord()));
                             break;
+                        case SHUTDOWN:
+                            processingRequests.clear();
+                            processingRequests = null;
+                            return;
                         default:
                             break;
 

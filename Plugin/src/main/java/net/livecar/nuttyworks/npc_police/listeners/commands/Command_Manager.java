@@ -263,6 +263,8 @@ public class Command_Manager {
                     commandGroups.add(methodAnnotation.group());
                 Command_Record cmdRecord = new Command_Record(methodAnnotation.name(), methodAnnotation.group(), methodAnnotation.permission(), methodAnnotation.badArgumentsMessage(), methodAnnotation.helpMessage(), methodAnnotation.allowConsole(), methodAnnotation.minArguments(), methodAnnotation.maxArguments(), methodAnnotation.arguments(), commandClass, commandMethod.getName());
                 registeredCommands.put(methodAnnotation.name(), cmdRecord);
+                //10-12-2019: Register permissions for plugins like Luckperms to display
+                getStorageReference.registerPermission(methodAnnotation.permission());
             }
         }
     }

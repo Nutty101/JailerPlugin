@@ -96,16 +96,26 @@ public class DamageListener implements Listener {
                     return;
                 }
 
+                final Player player = Bukkit.getPlayer(damaged.getUniqueId());
+
+                //2016-10-12:  Added permissions to bypass all NPC police actions.
+                if (getStorageReference.hasPermissions(player, "npcpolice.bypass.*"))
+                    return;
+
                 // is the damage greater than the players health? if so, take
                 // them to jail.
                 if (event.getFinalDamage() >= ((Player) damaged).getHealth() && !regionFlags.noArrest) {
 
                     World tmpWorld = damaged.getWorld();
-                    final Player player = Bukkit.getPlayer(damaged.getUniqueId());
+
                     Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
 
                     KICK_ACTION kickAction = KICK_ACTION.NOACTION;
-                    kickAction = plrRecord.playerKickCheck(tmpWorld, false);
+
+                    //2016-10-12:  Added permissions to bypass being kicking.
+                    if (getStorageReference.hasPermissions(player, "npcpolice.bypass.kick"))
+                        kickAction = plrRecord.playerKickCheck(tmpWorld, false);
+
                     if (kickAction == null)
                         kickAction = KICK_ACTION.NOACTION;
 
@@ -123,6 +133,10 @@ public class DamageListener implements Listener {
                         event.setDamage(((Player) damaged).getHealth() - 1);
                         return;
                     }
+
+                    //2016-10-12:  Added permissions to bypass being arrested
+                    if (getStorageReference.hasPermissions(player, "npcpolice.bypass.arrest"))
+                        return;
 
                     Jail_Setting jailRecord = null;
                     jailRecord = plrRecord.sendPlayerToJail(WANTED_REASONS.BOUNTY);
@@ -212,8 +226,11 @@ public class DamageListener implements Listener {
             }
 
             Player player = (Player) damager;
-            Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
+            //2016-10-12:  Added permissions to bypass actions for assaulting npc's
+            if (getStorageReference.hasPermissions(player, "npcpolice.bypass.assault.npc"))
+                return;
 
+            Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(player.getUniqueId());
             if (plrRecord == null)
                 return;
 
@@ -289,6 +306,11 @@ public class DamageListener implements Listener {
                 }
 
                 if (event.getDamage() >= ((LivingEntity) damaged).getHealth() && (regionFlags.monitorMurder == STATE_SETTING.TRUE || regionFlags.monitorMurder == STATE_SETTING.NOTSET)) {
+
+                    //2016-10-12:  Added permissions to bypass actions for assaulting npc's
+                    if (getStorageReference.hasPermissions(player, "npcpolice.bypass.murder.npc"))
+                        return;
+
                     // Add npc to list of murder for this player
                     Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_MURDER, world, npcTrait);
                     Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, npc, null, WANTED_REASONS.MURDER, newBounty, new Date());
@@ -321,6 +343,11 @@ public class DamageListener implements Listener {
                     try { Bukkit.getServer().getPluginManager().callEvent(murderEvent); } catch (Exception err) {}
 
                 } else if (regionFlags.monitorAssaults == STATE_SETTING.TRUE || regionFlags.monitorAssaults == STATE_SETTING.NOTSET || regionFlags.regionGuard) {
+
+                    //2016-10-12:  Added permissions to bypass actions for assaulting npc's
+                    if (getStorageReference.hasPermissions(player, "npcpolice.bypass.assault.npc"))
+                        return;
+
                     Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_DAMAGE, world) * event.getDamage();
                     Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, npc, null, WANTED_REASONS.ASSAULT, newBounty, new Date());
                     plrRecord.addNewWanted(wantedInf);
@@ -372,6 +399,10 @@ public class DamageListener implements Listener {
             regionFlags = getStorageReference.getWorldGuardPlugin.getRelatedRegionFlags(damaged.getLocation());
         World currentWorld = damager.getLocation().getWorld();
 
+        //2016-10-12:  Added permissions to bypass actions for assaulting players
+        if (getStorageReference.hasPermissions(damager, "npcpolice.bypass.assault.player"))
+            return;
+
         // PVP
         if (regionFlags.monitorPVP == STATE_SETTING.TRUE || regionFlags.monitorPVP == STATE_SETTING.NOTSET) {
             NPC witnessNPC = null;
@@ -420,6 +451,10 @@ public class DamageListener implements Listener {
             Arrest_Record targetRecord = getStorageReference.getPlayerManager.getPlayer(targetPlayer.getUniqueId());
 
             if (event.getDamage() >= ((LivingEntity) damaged).getHealth() && (regionFlags.monitorMurder == STATE_SETTING.TRUE || regionFlags.monitorMurder == STATE_SETTING.NOTSET)) {
+                //2016-10-12:  Added permissions to bypass actions for PVP murder
+                if (getStorageReference.hasPermissions(damager, "npcpolice.bypass.murder.player"))
+                    return;
+
                 Double newBounty = getStorageReference.getJailManager.getBountySetting(JAILED_BOUNTY.BOUNTY_MURDER, currentWorld);
                 Wanted_Information wantedInf = new Wanted_Information(getStorageReference.serverName, witnessNPC, null, targetPlayer, WANTED_REASONS.MURDER, newBounty, new Date());
                 plrRecord.addNewWanted(wantedInf);
