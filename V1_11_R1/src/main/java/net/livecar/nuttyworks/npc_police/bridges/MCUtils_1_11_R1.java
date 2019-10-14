@@ -218,6 +218,7 @@ public class MCUtils_1_11_R1 extends MCUtilsBridge {
         Double entityInterval = entityHeight/splitcnt;
 
         for (int cnt = 0;cnt < (splitcnt+1);cnt++) {
+            losResults.visability = 100.0;
             losResults = testLineOfSight(losResults, entityA.getEyeLocation(), new Location(entBLoc.getWorld(), entBLoc.getX(), getEntityMinY(player)+(entityInterval*cnt), entBLoc.getZ()),maxDistance, debug);
             if (losResults.visability <= 0.00)
                 return losResults;
