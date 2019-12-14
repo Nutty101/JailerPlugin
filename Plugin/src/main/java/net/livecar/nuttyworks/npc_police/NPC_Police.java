@@ -141,6 +141,11 @@ public class NPC_Police {
             getVersionBridge = new MCUtils_1_14_R1();
             getMessageManager.consoleMessage("console_messages.plugin_version",
                     pluginInstance.getServer().getVersion().substring(pluginInstance.getServer().getVersion().indexOf('(')));
+        } else if (pluginInstance.getServer().getClass().getPackage().getName().endsWith("v1_15_R1")) {
+            Version = 11510;
+            getVersionBridge = new MCUtils_1_15_R1();
+            getMessageManager.consoleMessage("console_messages.plugin_version",
+                    pluginInstance.getServer().getVersion().substring(pluginInstance.getServer().getVersion().indexOf('(')));
         } else {
             getMessageManager.consoleMessage("console_messages.plugin_unknownversion", pluginInstance.getServer().getVersion() + " [" + pluginInstance.getServer().getClass().getPackage().getName() + "]", Level.WARNING);
             return false;

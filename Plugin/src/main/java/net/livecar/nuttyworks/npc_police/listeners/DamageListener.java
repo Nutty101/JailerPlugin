@@ -235,7 +235,7 @@ public class DamageListener implements Listener {
                 return;
 
             // Check min damage in config
-            if ((new Date().getTime() - plrRecord.getLastWarning().getTime() > 2000) && (event.getDamage() < getStorageReference.getJailManager.getMaxWarningDamage(world)) && ((plrRecord.lastAttack != null && !plrRecord.lastAttack.trim().equals("")) || !plrRecord.lastAttack.equalsIgnoreCase(npc.getName())) && (plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED && plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED)) {
+            if ((new Date().getTime() - plrRecord.getLastWarning().getTime() > 2000) && (event.getDamage() < getStorageReference.getJailManager.getMaxWarningDamage(world)) && ((plrRecord.lastAttack != null && !plrRecord.lastAttack.trim().equals("")) || !plrRecord.lastAttack.equalsIgnoreCase(npc.getName())) && (plrRecord.getCurrentStatus() != CURRENT_STATUS.JAILED && plrRecord.getCurrentStatus() != CURRENT_STATUS.WANTED)) {
                 // Give a warning to the player
                 plrRecord.setLastWarning(new Date());
                 plrRecord.lastAttack = npc.getName();

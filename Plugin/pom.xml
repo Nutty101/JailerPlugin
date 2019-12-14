@@ -71,6 +71,13 @@
             <scope>compile</scope>
             <optional>false</optional>
         </dependency>
+        <dependency>
+            <groupId>net.livecar.nuttyworks.npc_police</groupId>
+            <artifactId>V1_15_R1</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>false</optional>
+        </dependency>
 
         <!-- WorldGuard Integration -->
         <dependency>

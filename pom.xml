@@ -12,6 +12,7 @@
     <modules>
         <module>API</module>
         <module>Plugin</module>
+        <module>V1_15_R1</module>
         <module>V1_14_R1</module>
         <module>V1_13_R2</module>
         <module>V1_12_R1</module>
