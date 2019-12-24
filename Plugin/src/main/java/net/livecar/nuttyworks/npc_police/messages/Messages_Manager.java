@@ -623,7 +623,11 @@ public class Messages_Manager {
                 message = message.replaceAll("<worldsetting\\.bounty\\.pvp>", worldSetting.getBounty_PVP() < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getBounty_PVP()));
             if (message.toLowerCase().contains("<worldsetting.bounty.maximum>"))
                 message = message.replaceAll("<worldsetting\\.bounty\\.maximum>", worldSetting.getBounty_Maximum() < 0 ? this.getResultMessage("result_Messages.notset")[0] : String.valueOf(worldSetting.getBounty_Maximum()));
-
+    
+            // Respawn Settings
+            if (message.toLowerCase().contains("<worldsetting.respawn.arrest>"))
+                message = message.replaceAll("<worldsetting\\.respawn\\.arrest>", worldSetting.getArrestOnRespawn() == STATE_SETTING.NOTSET ? this.getResultMessage("result_Messages.notset")[0] : worldSetting.getArrestOnRespawn() == STATE_SETTING.FALSE? "X\",\"color\":\"red" : "✔\",\"color\":\"yellow");
+    
             // Random look
             if (message.toLowerCase().contains("<worldsetting.look.degreesicon>"))
                 message = message.replaceAll("<worldsetting\\.look\\.degreesicon>", worldSetting.getRandomLook_Degrees() == 0 ? this.getResultMessage("result_Messages.notset")[0] : this.getResultMessage("result_Messages.numeric")[0]);

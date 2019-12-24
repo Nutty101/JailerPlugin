@@ -2,6 +2,7 @@ package net.livecar.nuttyworks.npc_police.listeners;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.livecar.nuttyworks.npc_police.NPC_Police;
+import net.livecar.nuttyworks.npc_police.api.Enumerations;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.CURRENT_STATUS;
 import net.livecar.nuttyworks.npc_police.api.Enumerations.STATE_SETTING;
 import net.livecar.nuttyworks.npc_police.citizens.NPCPolice_Trait;
@@ -15,10 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
@@ -57,7 +55,24 @@ public class PlayerListener implements Listener {
         Arrest_Record plrRecord = this.getStorageReference.getPlayerManager.getPlayer(event.getPlayer().getUniqueId());
         getStorageReference.getDatabaseManager.queueRemovePlayerRequest(plrRecord);
     }
-
+    
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event)
+    {
+        final Arrest_Record plrRecord = getStorageReference.getPlayerManager.getPlayer(event.getPlayer().getUniqueId());
+        if (plrRecord == null)
+            return;
+        if (plrRecord.getCurrentStatus() == CURRENT_STATUS.FREE)
+            return;
+            
+        if (getStorageReference.getJailManager.onRespawnArrestPlayer(event.getPlayer().getWorld()))
+        {
+            Bukkit.getServer().getScheduler().runTaskLater(
+                    getStorageReference.pluginInstance, () -> plrRecord.sendPlayerToJail(Enumerations.WANTED_REASONS.BOUNTY), 3
+            );
+        }
+    }
+    
     @EventHandler
     public void OnPlayerInteract(PlayerInteractEvent event) {
         switch (event.getAction()) {

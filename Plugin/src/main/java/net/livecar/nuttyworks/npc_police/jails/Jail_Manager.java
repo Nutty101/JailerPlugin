@@ -754,7 +754,21 @@ public class Jail_Manager {
 
         return onFreeReturnInventory(world);
     }
-
+    
+    public boolean onRespawnArrestPlayer() {
+        return getStorageReference.getJailManager.getWorldSettings("_GlobalSettings").getArrestOnRespawn() == STATE_SETTING.TRUE;
+    }
+    
+    public boolean onRespawnArrestPlayer(World world) {
+        if (!world_Configurations.containsKey(world.getName())) {
+            return onRespawnArrestPlayer();
+        }
+        if (world_Configurations.get(world.getName()).getArrestOnRespawn() == STATE_SETTING.NOTSET)
+            return onRespawnArrestPlayer();
+        
+        return world_Configurations.get(world.getName()).getArrestOnRespawn() == STATE_SETTING.TRUE ? true : false;
+    }
+    
     public void loadJailSettings() {
         world_Configurations = new HashMap<String, World_Setting>();
 
@@ -801,7 +815,9 @@ public class Jail_Manager {
             setupWorld.setTimeInterval_Escaped(getStorageReference.getDefaultConfig.getDouble("global_settings.times.escaped_bounty", 1.0));
             setupWorld.setTimeInterval_Jailed(getStorageReference.getDefaultConfig.getDouble("global_settings.times.jailed_bounty", -20.0));
             setupWorld.setTimeInterval_Wanted(getStorageReference.getDefaultConfig.getDouble("global_settings.times.wanted_bounty", 0.0));
-
+    
+            setupWorld.setArrestOnRespawn(getStorageReference.getDefaultConfig.getBoolean("global_settings.respawn.arrest", false) ? STATE_SETTING.TRUE : STATE_SETTING.FALSE);
+            
             setupWorld.setTimeInterval_Wanted(getStorageReference.getDefaultConfig.getDouble("global_settings.escaped", 0.0));
 
             if (getStorageReference.getDefaultConfig.contains("global_settings.inventory.takeonarrest"))
@@ -885,7 +901,11 @@ public class Jail_Manager {
             newWorld.setBounty_PVP(jail_Settings.getDouble(worldName + ".bounty.jailed_pvp"));
         if (jail_Settings.contains(worldName + ".bounty.maximum"))
             newWorld.setBounty_Maximum(jail_Settings.getDouble(worldName + ".bounty.maximum"));
-
+    
+        if (jail_Settings.contains(worldName + ".respawn.arrest"))
+            newWorld.setArrestOnRespawn(jail_Settings.getBoolean(worldName + ".respawn.arrest") ? STATE_SETTING.TRUE : STATE_SETTING.FALSE);
+    
+    
         //Escape Enabled Settings
         if (jail_Settings.contains(worldName + ".settings.escapesetting"))
             newWorld.setEscapeSetting(ESCAPE_SETTING.valueOf(jail_Settings.getString(worldName + ".settings.escapesetting")));
@@ -1093,7 +1113,10 @@ public class Jail_Manager {
                 jail_Settings.set(worldConfig.getWorldName() + ".bounty.jailed_pvp", worldConfig.getBounty_PVP());
             if (worldConfig.getBounty_Maximum() > -1)
                 jail_Settings.set(worldConfig.getWorldName() + ".bounty.maximum", worldConfig.getBounty_Maximum());
-
+    
+            if (worldConfig.getArrestOnRespawn() != STATE_SETTING.NOTSET)
+                jail_Settings.set(worldConfig.getWorldName() + ".respawn.arrest", worldConfig.getArrestOnRespawn() == STATE_SETTING.TRUE ? true : false);
+            
             // Bounty time settings
             if (worldConfig.getTimeInterval_Jailed() != Double.MIN_VALUE)
                 jail_Settings.set(worldConfig.getWorldName() + ".times.jailed_bounty", worldConfig.getTimeInterval_Jailed());

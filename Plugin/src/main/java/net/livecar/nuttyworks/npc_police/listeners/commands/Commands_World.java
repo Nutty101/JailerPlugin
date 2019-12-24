@@ -304,6 +304,33 @@ public class Commands_World {
         policeRef.getMessageManager.sendMessage(sender, "world_settings.settings_menu", selectedWorld);
         return true;
     }
-
+    
+    @CommandInfo(
+            name = "respawnarrest",
+            group = "Configuration Defaults",
+            badArgumentsMessage = "command_respawnarrest_args",
+            helpMessage = "command_respawnarrest_help",
+            arguments = {"--world|--jail", "<world>|<jail>"},
+            permission = "npcpolice.settings.respawnarrest",
+            allowConsole = false,
+            minArguments = 0,
+            maxArguments = 0
+    )
+    public boolean worldConfig_ArrestOnRespawn(NPC_Police policeRef, CommandSender sender, NPC npc, String[] inargs, Arrest_Record playerRecord, String serverWorld, World_Setting selectedWorld, Jail_Setting selectedJail) {
+        if (!policeRef.getJailManager.containsWorld(serverWorld)) {
+            // Add the world to the settings
+            policeRef.getJailManager.addWorldSetting(serverWorld, new World_Setting(serverWorld));
+        }
+    
+        World_Setting worldConfig = policeRef.getJailManager.getWorldSettings(serverWorld);
+    
+        if (worldConfig.getArrestOnRespawn().next() == null)
+            worldConfig.setArrestOnRespawn(Enumerations.STATE_SETTING.TRUE);
+        else
+            worldConfig.setArrestOnRespawn(worldConfig.getArrestOnRespawn().next());
+        
+        policeRef.getMessageManager.sendMessage(sender, "world_settings.settings_menu", selectedWorld);
+        return true;
+    }
 
 }

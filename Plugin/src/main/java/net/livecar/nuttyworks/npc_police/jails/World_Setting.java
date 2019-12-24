@@ -46,6 +46,7 @@ public class World_Setting {
     // Enabled features
     private Enumerations.ESCAPE_SETTING escapeSetting = Enumerations.ESCAPE_SETTING.NOTSET;
     private Integer escapeLastSeenInJail = -1;
+    private STATE_SETTING arrestOnRespawn = STATE_SETTING.NOTSET;
 
     // Bounty Settings
     private Double bounty_Damage = -1.0D;
@@ -87,6 +88,7 @@ public class World_Setting {
     private STATE_SETTING onArrest_InventoryAction = STATE_SETTING.NOTSET;
     private STATE_SETTING onEscape_InventoryAction = STATE_SETTING.NOTSET;
     private STATE_SETTING onFree_InventoryAction = STATE_SETTING.NOTSET;
+    private int lockedInventory_MaxLife = -1;
 
     public World_Setting(String worldName) {
         jail_Configs = new HashMap<String, Jail_Setting>();
@@ -577,5 +579,8 @@ public class World_Setting {
             return;
         this.escapeLastSeenInJail = escapeLastSeenInJail;
     }
-
+    
+    public STATE_SETTING getArrestOnRespawn() {return this.arrestOnRespawn;}
+    public void setArrestOnRespawn(STATE_SETTING setting) {this.arrestOnRespawn = setting;}
+    
 }
