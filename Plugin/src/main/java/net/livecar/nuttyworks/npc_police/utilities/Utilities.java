@@ -18,6 +18,7 @@ import org.bukkit.util.Vector;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -151,6 +152,20 @@ public class Utilities {
     }
 
     public ItemStack[] addToInventory(ItemStack[] sourceInventory, ItemStack[] destinationInventory) {
+    
+        if (sourceInventory.length > 39 && destinationInventory.length > 39)
+        {
+            //Set body items into respective slots
+            for (int inventorySlot = 36; inventorySlot < 41; inventorySlot++) {
+                if ((sourceInventory[inventorySlot] != null && !sourceInventory[inventorySlot].getType().equals(Material.AIR)) ||
+                        (destinationInventory[inventorySlot] == null || destinationInventory[inventorySlot].getType().equals(Material.AIR)))
+                {
+                    destinationInventory[inventorySlot] = sourceInventory[inventorySlot];
+                    sourceInventory[inventorySlot] = null;
+                }
+            }
+        }
+        
         for (int inventorySlot = 0; inventorySlot < sourceInventory.length; inventorySlot++) {
             if (sourceInventory[inventorySlot] == null || sourceInventory[inventorySlot].getType() == Material.AIR)
                 continue;
@@ -159,32 +174,14 @@ public class Utilities {
             int emptySlot = -1;
 
             for (int lockedSlot = 0; lockedSlot < destinationInventory.length; lockedSlot++) {
-                if (sourceInventory[inventorySlot] == null || sourceInventory[inventorySlot].getType() == Material.AIR)
-                    continue;
-
-                if (emptySlot == -1 && destinationInventory[lockedSlot] == null) {
-                    emptySlot = lockedSlot;
-                    continue;
-                } else if (emptySlot == -1 && destinationInventory[lockedSlot].getType() == Material.AIR) {
+    
+                if (emptySlot == -1 && (destinationInventory[lockedSlot] == null || destinationInventory[lockedSlot].getType() == Material.AIR)) {
                     emptySlot = lockedSlot;
                     continue;
                 }
-
-                if (destinationInventory[lockedSlot] != null) {
-                    if (destinationInventory[lockedSlot].isSimilar(item)) // .getType()
-                    // ==
-                    // item.getType()
-                    // &&
-                    // destinationInventory[lockedSlot].getData().equals(item.getData())
-                    // &&
-                    // destinationInventory[lockedSlot].getDurability()
-                    // ==
-                    // item.getDurability()
-                    // &&
-                    // destinationInventory[lockedSlot].getAmount()
-                    // <
-                    // destinationInventory[lockedSlot].getType().getMaxStackSize())
-                    {
+    
+                if (destinationInventory[lockedSlot] != null && !destinationInventory[lockedSlot].getType().equals(Material.AIR)) {
+                    if (destinationInventory[lockedSlot].getAmount() < destinationInventory[lockedSlot].getMaxStackSize() && destinationInventory[lockedSlot].isSimilar(item)) {
                         if ((destinationInventory[lockedSlot].getAmount() + item.getAmount()) > (destinationInventory[lockedSlot].getType().getMaxStackSize())) {
                             int leftOver = Math.abs(sourceInventory[inventorySlot].getType().getMaxStackSize() - (destinationInventory[lockedSlot].getAmount() + item.getAmount()));
                             destinationInventory[lockedSlot].setAmount(item.getAmount() - leftOver);
@@ -196,13 +193,13 @@ public class Utilities {
                         }
                     }
                 }
-
-                if (emptySlot != -1 && (destinationInventory[emptySlot] == null || destinationInventory[emptySlot].getType() == Material.AIR) && item != null) {
-                    destinationInventory[emptySlot] = item.clone();
-                    emptySlot = -1;
-                    sourceInventory[inventorySlot] = null;
-                    continue;
-                }
+            }
+            
+            if (emptySlot > -1 && (destinationInventory[emptySlot] == null || destinationInventory[emptySlot].getType() == Material.AIR) ) {
+                destinationInventory[emptySlot] = item.clone();
+                emptySlot = -1;
+                sourceInventory[inventorySlot] = null;
+                continue;
             }
         }
         return sourceInventory;
