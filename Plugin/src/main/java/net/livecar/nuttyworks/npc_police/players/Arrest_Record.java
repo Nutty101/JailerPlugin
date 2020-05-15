@@ -382,7 +382,7 @@ public class Arrest_Record implements Listener {
                         // Fire off the notice that the player has exceeded it.
                         try {
                             for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.BOUNTY_MAXIMUM, curPlayer.getWorld(), this.currentJail)) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0));
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0,null));
                             }
                         } catch (Exception err) {
 
@@ -406,7 +406,7 @@ public class Arrest_Record implements Listener {
                         // Fire off the notice that the player has exceeded it.
                         try {
                             for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.BOUNTY_MAXIMUM, curPlayer.getWorld(), this.currentJail)) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0));
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0,null));
                             }
                         } catch (Exception err) {
 
@@ -433,7 +433,7 @@ public class Arrest_Record implements Listener {
                         // Fire off the notice that the player has exceeded it.
                         try {
                             for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.BOUNTY_MAXIMUM, curPlayer.getWorld(), this.currentJail)) {
-                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0));
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(curPlayer, sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(curPlayer.getWorld().getName()), null, null, 0,null));
                             }
                         } catch (Exception err) {
 
@@ -662,7 +662,7 @@ public class Arrest_Record implements Listener {
                     NPCMurderedEvent npcMurderedEvent = new Core_NPCMurderedEvent(this.getStorageReference, wantedInfo.getRelatedNPC(), wantedInfo.getWitness(), this);
                     try {Bukkit.getServer().getPluginManager().callEvent(npcMurderedEvent);} catch (Exception err) {}
 
-                } else {
+                } else if (wantedInfo.getRelatedPlayerUUID() != null) {
                     wantedHeader = WANTED_REASONS.PVP.toString() + ":" + wantedInfo.getAttackedName();
                     if (this.wanted_Reasons.containsKey(wantedHeader)) {
                         wantedInfo.addOffense(this.wanted_Reasons.get(wantedHeader).getFirstOffenseDate(), this.wanted_Reasons.get(wantedHeader).getBountyValue());
@@ -679,6 +679,23 @@ public class Arrest_Record implements Listener {
 
                     PlayerMurderedEvent playerMurderedEvent = new Core_PlayerMurderedEvent(this.getStorageReference, wantedInfo.getRelatedPlayer(),wantedInfo.getWitness(), this);
                     try {Bukkit.getServer().getPluginManager().callEvent(playerMurderedEvent);} catch (Exception err) {}
+                } else {
+                    wantedHeader = WANTED_REASONS.MURDER.toString() + ":" + wantedInfo.getAttackedName();
+                    if (this.wanted_Reasons.containsKey(wantedHeader)) {
+                        this.wanted_Reasons.get(wantedHeader).addOffense(wantedInfo.getFirstOffenseDate(), wantedInfo.getBountyValue());
+                    } else {
+                        this.wanted_Reasons.put(wantedHeader, wantedInfo);
+                    }
+                    if (!statistics.containsKey(wantedInfo.getWantedReason())) {
+                        statistics.put(wantedInfo.getWantedReason(), 0);
+                    }
+                    statCount = statistics.get(wantedInfo.getWantedReason());
+                    statistics.remove(wantedInfo.getWantedReason());
+                    statCount++;
+                    statistics.put(wantedInfo.getWantedReason(), statCount);
+    
+                    EntityMurderedEvent entityMurderedEvent = new Core_EntityMurderedEvent(this.getStorageReference, wantedInfo.getRelatedEntity(), wantedInfo.getWitness(), this);
+                    try {Bukkit.getServer().getPluginManager().callEvent(entityMurderedEvent);} catch (Exception err) {}
                 }
                 break;
             case PLUGIN:
@@ -977,7 +994,7 @@ public class Arrest_Record implements Listener {
 
         try {
             for (String sMsg : getStorageReference.getJailManager.getProcessedCommands(COMMAND_LISTS.PLAYER_RELEASED, getPlayer().getWorld(), currentJail)) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(getPlayer(), sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(getPlayer().getWorld().getName()), null, null, 0));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), getStorageReference.getMessageManager.parseMessage(getPlayer(), sMsg, null, this, null, null, getStorageReference.getJailManager.getWorldSettings(getPlayer().getWorld().getName()), null, null, 0,null));
             }
         } catch (Exception err) {
 

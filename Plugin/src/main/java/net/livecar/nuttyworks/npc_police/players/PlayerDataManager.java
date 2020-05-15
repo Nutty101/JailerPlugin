@@ -297,9 +297,17 @@ public class PlayerDataManager {
                                 if (plrRecord.hasCoolDown(regionFlags.regionName) == STATE_SETTING.FALSE) {
                                     // Apply more bounty
                                     plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
+                                    if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
+                                        plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
+                                        break;
+                                    }
                                 }
                             } else {
                                 plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
+                                if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
+                                    plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
+                                    break;
+                                }
                             }
                         }
 
@@ -319,19 +327,23 @@ public class PlayerDataManager {
                                 getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
                         }
 
-                        if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
-                            plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
-                            break;
-                        }
                     }
                 } else if (regionFlags.autoFlag_Bounty != null) {
                     if (regionFlags.autoFlag_CoolDown != null) {
                         if (plrRecord.hasCoolDown(regionFlags.regionName) == STATE_SETTING.FALSE) {
                             // Apply more bounty
                             plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
+                            if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
+                                plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
+                                break;
+                            }
                         }
                     } else {
                         plrRecord.changeBounty(JAILED_BOUNTY.MANUAL, regionFlags.autoFlag_Bounty);
+                        if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
+                            plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
+                            break;
+                        }
                     }
 
                     if (regionFlags.region_AutoFlagStatus == CURRENT_STATUS.WANTED) {
@@ -349,12 +361,6 @@ public class PlayerDataManager {
                         if (getStorageReference.getPermissionManager != null && !getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()).isEmpty())
                             getStorageReference.getPermissionManager.playerAddGroup(plrRecord.getPlayer(), getStorageReference.getJailManager.getJailGroup(JAILED_GROUPS.JAILED, plrRecord.getPlayer().getWorld()));
                     }
-
-                    if (regionFlags.autoFlag_CaughtNotice != null && !regionFlags.autoFlag_CaughtNotice.trim().equals("")) {
-                        plrRecord.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', getStorageReference.getMessageManager.parseMessage(plrRecord.getPlayer(), regionFlags.autoFlag_CaughtNotice, null, plrRecord, null, null, null, guardWithSight, null, 0)));
-                        break;
-                    }
-
                 }
 
                 int secondsPassed = ((int) (new Date().getTime() - playerKP.getValue().getLastCheck().getTime()) / 1000);
